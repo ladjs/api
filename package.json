@@ -1,7 +1,7 @@
 {
   "name": "@ladjs/api",
   "description": "API server for Lad",
-  "version": "0.0.3",
+  "version": "0.0.4",
   "author": "Nick Baugh <niftylettuce@gmail.com> (http://niftylettuce.com/)",
   "bugs": {
     "url": "https://github.com/ladjs/api/issues",
@@ -19,7 +19,7 @@
     "ip": "^1.1.5",
     "koa": "^2.4.1",
     "koa-404-handler": "^0.0.1",
-    "koa-better-error-handler": "^1.3.1",
+    "koa-better-error-handler": "^1.3.2",
     "koa-better-timeout": "^0.0.2",
     "koa-bodyparser": "^4.2.0",
     "koa-compress": "^2.0.0",

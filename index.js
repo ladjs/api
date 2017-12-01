@@ -174,6 +174,9 @@ class Server {
 
     this.server = server;
 
+    // Expose app so we can test it without the server wrapper
+    if (process.env.NODE_ENV === 'test') this.app = app;
+
     autoBind(this);
   }
 

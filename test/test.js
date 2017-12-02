@@ -15,8 +15,7 @@ const error = () => {
 
 const config = {
   cabin: {},
-  protocol: process.env.API_PROTOCOL | 'http',
-  port: process.env.API_PORT || 4000,
+  protocol: process.env.API_PROTOCOL || 'http',
   ssl: {
     key: null,
     cert: null,

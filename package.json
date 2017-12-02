@@ -1,7 +1,7 @@
 {
   "name": "@ladjs/api",
   "description": "API server for Lad",
-  "version": "0.0.4",
+  "version": "0.0.5",
   "author": "Nick Baugh <niftylettuce@gmail.com> (http://niftylettuce.com/)",
   "ava": {
     "failFast": true,
@@ -60,9 +60,7 @@
   "engines": {
     "node": ">=8.3"
   },
-  "files": [
-    "index.js"
-  ],
+  "files": ["index.js"],
   "homepage": "https://github.com/ladjs/api",
   "keywords": [
     "api",
@@ -94,16 +92,11 @@
       "prettier --write --single-quote --trailing-comma none",
       "git add"
     ],
-    "*.md": [
-      "remark . -qfo",
-      "git add"
-    ]
+    "*.md": ["remark . -qfo", "git add"]
   },
   "main": "index.js",
   "remarkConfig": {
-    "plugins": [
-      "preset-github"
-    ]
+    "plugins": ["preset-github"]
   },
   "repository": {
     "type": "git",
@@ -118,9 +111,7 @@
   },
   "xo": {
     "extends": "prettier",
-    "plugins": [
-      "prettier"
-    ],
+    "plugins": ["prettier"],
     "parserOptions": {
       "sourceType": "script"
     },

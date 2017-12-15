@@ -25,6 +25,13 @@ const Timeout = require('koa-better-timeout');
 const I18N = require('@ladjs/i18n');
 const Auth = require('@ladjs/auth');
 
+let max = process.env.RATELIMIT_MAX
+  ? parseInt(process.env.RATELIMIT_MAX, 10)
+  : 100;
+
+if (!process.env.RATELIMIT_MAX && process.env.NODE_ENV === 'development')
+  max = Number.MAX_VALUE;
+
 class Server {
   constructor(config) {
     this.config = Object.assign(
@@ -47,11 +54,15 @@ class Server {
         logger: console,
         i18n: {},
         rateLimit: {
-          duration: 60000,
-          max: process.env.RATELIMIT_MAX || 100,
+          duration: process.env.RATELIMIT_DURATION
+            ? parseInt(process.env.RATELIMIT_DURATION, 10)
+            : 60000,
+          max,
           id: ctx => ctx.ip
         },
-        timeoutMs: process.env.API_TIMEOUT_MS || 2000
+        timeoutMs: process.env.API_TIMEOUT_MS
+          ? parseInt(process.env.API_TIMEOUT_MS, 10)
+          : 2000
       },
       config
     );

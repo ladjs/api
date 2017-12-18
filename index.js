@@ -23,7 +23,6 @@ const StoreIPAddress = require('@ladjs/store-ip-address');
 const ip = require('ip');
 const Timeout = require('koa-better-timeout');
 const I18N = require('@ladjs/i18n');
-const Auth = require('@ladjs/auth');
 
 let max = process.env.RATELIMIT_MAX
   ? parseInt(process.env.RATELIMIT_MAX, 10)
@@ -49,9 +48,9 @@ class Server {
             ? fs.readFileSync(process.env.API_SSL_CA_PATH)
             : null
         },
-        Users: false,
         routes: false,
         logger: console,
+        passport: false,
         i18n: {},
         rateLimit: {
           duration: process.env.RATELIMIT_DURATION
@@ -150,11 +149,8 @@ class Server {
     // 404 handler
     app.use(koa404Handler);
 
-    // auth
-    if (this.config.Users) {
-      const auth = new Auth(this.config.Users, this.config.auth);
-      app.use(auth.passport.initialize());
-    }
+    // passport
+    if (this.config.passport) app.use(this.config.passport.initialize());
 
     // configure timeout
     app.use(async (ctx, next) => {

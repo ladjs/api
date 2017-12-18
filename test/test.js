@@ -2,7 +2,6 @@ const test = require('ava');
 const request = require('supertest');
 const Router = require('koa-router');
 const Server = require('..');
-const Users = require('./fixtures/models/user');
 
 const ok = ctx => {
   ctx.status = 200;
@@ -16,12 +15,12 @@ const error = () => {
 const config = {
   cabin: {},
   protocol: process.env.API_PROTOCOL || 'http',
+  passport: false,
   ssl: {
     key: null,
     cert: null,
     ca: null
   },
-  Users: false,
   routes: false,
   logger: console,
   i18n: {},
@@ -52,8 +51,7 @@ test.failing('allows custom routes', async t => {
   router.get('/error', error);
 
   const server = new Server({
-    routes: router.routes(),
-    Users
+    routes: router.routes()
   });
 
   const res = await request(server.server).get('/');

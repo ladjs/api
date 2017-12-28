@@ -59,13 +59,6 @@
     qs "^6.5.1"
     underscore.string "^3.3.4"
 
-"@ladjs/koa-simple-ratelimit@^2.3.4":
-  version "2.3.4"
-  resolved "https://registry.yarnpkg.com/@ladjs/koa-simple-ratelimit/-/koa-simple-ratelimit-2.3.4.tgz#63c612b354fda2f27d21e9bc1f60f83ce8b2948d"
-  dependencies:
-    debug "^3.1.0"
-    ms "^2.1.1"
-
 "@ladjs/store-ip-address@^0.0.4":
   version "0.0.4"
   resolved "https://registry.yarnpkg.com/@ladjs/store-ip-address/-/store-ip-address-0.0.4.tgz#5f57d3ab14a42b73fd6a89f2cb46377694537d5f"
@@ -3192,6 +3185,13 @@ koa-router@^7.3.0:
     methods "^1.0.1"
     path-to-regexp "^1.1.1"
     urijs "^1.19.0"
+
+koa-simple-ratelimit@^2.4.0:
+  version "2.4.0"
+  resolved "https://registry.yarnpkg.com/koa-simple-ratelimit/-/koa-simple-ratelimit-2.4.0.tgz#a4b7e73e9e1e1a864f2e726310d3305b19a59cf7"
+  dependencies:
+    debug "^3.1.0"
+    ms "^2.1.1"
 
 koa@^2.4.1:
   version "2.4.1"

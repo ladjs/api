@@ -27,7 +27,8 @@ const config = {
   rateLimit: {
     duration: 60000,
     max: 100,
-    id: ctx => ctx.ip
+    id: ctx => ctx.ip,
+    prefix: 'limit_test'
   },
   timeoutMs: 2000
 };

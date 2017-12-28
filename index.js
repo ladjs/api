@@ -10,7 +10,7 @@ const conditional = require('koa-conditional-get');
 const etag = require('koa-etag');
 const compress = require('koa-compress');
 const responseTime = require('koa-response-time');
-const rateLimit = require('koa-simple-ratelimit');
+const rateLimit = require('@ladjs/koa-simple-ratelimit');
 const koaLogger = require('koa-logger');
 const bodyParser = require('koa-bodyparser');
 const koa404Handler = require('koa-404-handler');
@@ -57,7 +57,10 @@ class Server {
             ? parseInt(process.env.RATELIMIT_DURATION, 10)
             : 60000,
           max,
-          id: ctx => ctx.ip
+          id: ctx => ctx.ip,
+          prefix: process.env.RATELIMIT_PREFIX
+            ? process.env.RATELIMIT_PREFIX
+            : `limit_${process.env.NODE_ENV.toLowerCase()}`
         },
         timeoutMs: process.env.API_TIMEOUT_MS
           ? parseInt(process.env.API_TIMEOUT_MS, 10)

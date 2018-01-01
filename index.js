@@ -106,19 +106,17 @@ class Server {
     // setup localization
     app.use(i18n.middleware);
 
-    // override koa's undocumented error handler
-    app.context.onerror = errorHandler;
-
     // specify that this is our api (used by error handler)
     app.context.api = true;
+
+    // override koa's undocumented error handler
+    app.context.onerror = errorHandler;
 
     // response time
     app.use(responseTime());
 
-    // add the logger for development environment only
-    // TODO: there's a weird logger issue, see this GH issue
-    // <https://github.com/koajs/logger/issues/49>
-    if (process.env.NODE_ENV === 'development') app.use(koaLogger());
+    // request logger with custom logger
+    app.use(koaLogger({ logger }));
 
     // rate limiting
     app.use(

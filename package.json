@@ -1,7 +1,7 @@
 {
   "name": "@ladjs/api",
   "description": "API server for Lad",
-  "version": "0.1.8",
+  "version": "0.1.9",
   "author": "Nick Baugh <niftylettuce@gmail.com> (http://niftylettuce.com/)",
   "ava": {
     "failFast": true,
@@ -15,7 +15,7 @@
     "Nick Baugh <niftylettuce@gmail.com> (http://niftylettuce.com/)"
   ],
   "dependencies": {
-    "@ladjs/i18n": "^0.3.0",
+    "@ladjs/i18n": "^0.3.1",
     "@ladjs/store-ip-address": "^0.0.5",
     "boolean": "^0.1.3",
     "cabin": "^1.0.0",

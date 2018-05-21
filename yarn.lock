@@ -58,9 +58,9 @@
   dependencies:
     arrify "^1.0.1"
 
-"@ladjs/i18n@^0.3.0":
-  version "0.3.0"
-  resolved "https://registry.yarnpkg.com/@ladjs/i18n/-/i18n-0.3.0.tgz#d6526fd58c40c0c659808e53731d3fadaad5ce13"
+"@ladjs/i18n@^0.3.1":
+  version "0.3.1"
+  resolved "https://registry.yarnpkg.com/@ladjs/i18n/-/i18n-0.3.1.tgz#ea648f3da95abd7ea4d0358fe4e5a89377e3868c"
   dependencies:
     auto-bind "^1.2.0"
     boolean "^0.1.3"

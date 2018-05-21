@@ -8,10 +8,6 @@ const ok = ctx => {
   ctx.body = { ok: 'ok' };
 };
 
-const error = () => {
-  throw new Error('Big Bad Error!');
-};
-
 const config = {
   cabin: {},
   protocol: process.env.API_PROTOCOL || 'http',
@@ -45,11 +41,10 @@ test('returns self', t => {
   t.deepEqual(server.config, tempConfig);
 });
 
-test.failing('allows custom routes', async t => {
+test('allows custom routes', async t => {
   const router = new Router();
 
   router.get('/', ok);
-  router.get('/error', error);
 
   const server = new Server({
     routes: router.routes()

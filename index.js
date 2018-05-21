@@ -23,6 +23,7 @@ const StoreIPAddress = require('@ladjs/store-ip-address');
 const ip = require('ip');
 const Timeout = require('koa-better-timeout');
 const I18N = require('@ladjs/i18n');
+const { oneLine } = require('common-tags');
 
 const env = process.env.NODE_ENV || 'development';
 
@@ -161,7 +162,10 @@ class Server {
       try {
         const timeout = new Timeout({
           ms: this.config.timeoutMs,
-          message: ctx.translate('REQUEST_TIMED_OUT')
+          message: ctx.req.t(
+            oneLine`Sorry, your request has timed out.
+            We have been alerted of this issue.  Please try again.`
+          )
         });
         await timeout.middleware(ctx, next);
       } catch (err) {

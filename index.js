@@ -24,12 +24,13 @@ const ip = require('ip');
 const Timeout = require('koa-better-timeout');
 const I18N = require('@ladjs/i18n');
 
+const env = process.env.NODE_ENV || 'development';
+
 let max = process.env.RATELIMIT_MAX
   ? parseInt(process.env.RATELIMIT_MAX, 10)
   : 100;
 
-if (!process.env.RATELIMIT_MAX && process.env.NODE_ENV === 'development')
-  max = Number.MAX_VALUE;
+if (!process.env.RATELIMIT_MAX && env === 'development') max = Number.MAX_VALUE;
 
 class Server {
   constructor(config) {
@@ -60,7 +61,7 @@ class Server {
           id: ctx => ctx.ip,
           prefix: process.env.RATELIMIT_PREFIX
             ? process.env.RATELIMIT_PREFIX
-            : `limit_${process.env.NODE_ENV.toLowerCase()}`
+            : `limit_${env.toLowerCase()}`
         },
         timeoutMs: process.env.API_TIMEOUT_MS
           ? parseInt(process.env.API_TIMEOUT_MS, 10)
@@ -110,6 +111,8 @@ class Server {
     app.context.api = true;
 
     // override koa's undocumented error handler
+    // TODO: <https://github.com/sindresorhus/eslint-plugin-unicorn/issues/174>
+    // eslint-disable-next-line unicorn/prefer-add-event-listener
     app.context.onerror = errorHandler;
 
     // response time
@@ -186,7 +189,7 @@ class Server {
     this.server = server;
 
     // Expose app so we can test it without the server wrapper
-    if (process.env.NODE_ENV === 'test') this.app = app;
+    if (env === 'test') this.app = app;
 
     autoBind(this);
   }

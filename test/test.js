@@ -26,6 +26,7 @@ const config = {
     id: ctx => ctx.ip,
     prefix: 'limit_test'
   },
+  cors: {},
   timeoutMs: 2000
 };
 

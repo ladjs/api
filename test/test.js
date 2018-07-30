@@ -9,7 +9,7 @@ const ok = ctx => {
 };
 
 const config = {
-  cabin: {},
+  cabin: { axe: { capture: false } },
   protocol: process.env.API_PROTOCOL || 'http',
   passport: false,
   ssl: {

@@ -47,7 +47,7 @@ class Server {
   constructor(config) {
     this.config = Object.assign(
       {
-        cabin: {},
+        cabin: { axe: { capture: false } },
         protocol: process.env.API_PROTOCOL || 'http',
         ssl: {
           key: process.env.API_SSL_KEY_PATH
@@ -79,7 +79,10 @@ class Server {
     const i18n = this.config.i18n.config
       ? this.config.i18n
       : new I18N({ ...this.config.i18n, logger });
-    const cabin = new Cabin(this.config.cabin);
+    const cabin = new Cabin({
+      logger,
+      ...this.config.cabin
+    });
 
     // initialize the app
     const app = new Koa();
@@ -190,8 +193,6 @@ class Server {
     if (this.config.routes) {
       if (_.isFunction(this.config.routes.routes))
         app.use(this.config.routes.routes());
-      if (_.isFunction(this.config.routes.allowedMethods))
-        app.use(this.config.routes.allowedMethods());
       else app.use(this.config.routes);
     }
 

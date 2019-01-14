@@ -1,84 +1,42 @@
 const http = require('http');
-const https = require('https');
-const fs = require('fs');
-const autoBind = require('auto-bind');
-const _ = require('lodash');
-const Koa = require('koa');
+const http2 = require('spdy');
+
 const Cabin = require('cabin');
-const boolean = require('boolean');
-const conditional = require('koa-conditional-get');
-const etag = require('koa-etag');
-const compress = require('koa-compress');
-const responseTime = require('koa-response-time');
-const rateLimiter = require('koa-simple-ratelimit');
-const koaLogger = require('koa-logger');
-const bodyParser = require('koa-bodyparser');
-const koa404Handler = require('koa-404-handler');
-const json = require('koa-json');
-const errorHandler = require('koa-better-error-handler');
-const helmet = require('koa-helmet');
-const cors = require('kcors');
-const removeTrailingSlashes = require('koa-no-trailing-slash');
-const redis = require('redis');
-const StoreIPAddress = require('@ladjs/store-ip-address');
-const ip = require('ip');
-const Timeout = require('koa-better-timeout');
 const I18N = require('@ladjs/i18n');
-const { oneLine } = require('common-tags');
+const Koa = require('koa');
+const StoreIPAddress = require('@ladjs/store-ip-address');
+const Timeout = require('koa-better-timeout');
+const _ = require('lodash');
+const auth = require('koa-basic-auth');
+const autoBind = require('auto-bind');
+const bodyParser = require('koa-bodyparser');
+const boolean = require('boolean');
+const compress = require('koa-compress');
+const conditional = require('koa-conditional-get');
+const cors = require('kcors');
+const errorHandler = require('koa-better-error-handler');
+const etag = require('koa-etag');
+const helmet = require('koa-helmet');
+const ip = require('ip');
+const json = require('koa-json');
+const koa404Handler = require('koa-404-handler');
+const koaConnect = require('koa-connect');
+const rateLimiter = require('koa-simple-ratelimit');
+const redis = require('redis');
+const removeTrailingSlashes = require('koa-no-trailing-slash');
+const requestId = require('express-request-id');
+const responseTime = require('response-time');
+const sharedConfig = require('@ladjs/shared-config');
 
-const env = process.env.NODE_ENV || 'development';
-
-let rateLimit = {
-  duration: process.env.RATELIMIT_DURATION
-    ? parseInt(process.env.RATELIMIT_DURATION, 10)
-    : 60000,
-  max: process.env.RATELIMIT_MAX
-    ? parseInt(process.env.RATELIMIT_MAX, 10)
-    : 100,
-  id: ctx => ctx.ip,
-  prefix: process.env.RATELIMIT_PREFIX
-    ? process.env.RATELIMIT_PREFIX
-    : `limit_${env.toLowerCase()}`
-};
-
-if (env === 'development') rateLimit = false;
-
-class Server {
+class API {
   constructor(config) {
-    this.config = Object.assign(
-      {
-        cabin: { axe: { capture: false } },
-        protocol: process.env.API_PROTOCOL || 'http',
-        ssl: {
-          key: process.env.API_SSL_KEY_PATH
-            ? fs.readFileSync(process.env.API_SSL_KEY_PATH)
-            : null,
-          cert: process.env.API_SSL_CERT_PATH
-            ? fs.readFileSync(process.env.API_SSL_CERT_PATH)
-            : null,
-          ca: process.env.API_SSL_CA_PATH
-            ? fs.readFileSync(process.env.API_SSL_CA_PATH)
-            : null
-        },
-        routes: false,
-        logger: console,
-        passport: false,
-        i18n: {},
-        rateLimit,
-        // <https://github.com/koajs/cors#corsoptions>
-        cors: {},
-        timeoutMs: process.env.API_TIMEOUT_MS
-          ? parseInt(process.env.API_TIMEOUT_MS, 10)
-          : 2000
-      },
-      config
-    );
+    this.config = {
+      ...sharedConfig('API'),
+      ...config
+    };
 
     const { logger } = this.config;
     const storeIPAddress = new StoreIPAddress({ logger });
-    const i18n = this.config.i18n.config
-      ? this.config.i18n
-      : new I18N({ ...this.config.i18n, logger });
     const cabin = new Cabin({
       logger,
       ...this.config.cabin
@@ -102,31 +60,42 @@ class Server {
     // later on with `server.close()`
     let server;
 
-    app.on('error', logger.contextError || logger.error);
+    // listen for error and log events emitted by app
+    app.on('error', (err, ctx) => ctx.logger.error(err));
     app.on('log', logger.log);
 
     // only trust proxy if enabled
     app.proxy = boolean(process.env.TRUST_PROXY);
 
-    // compress/gzip
-    app.use(compress());
-
-    // setup localization
-    app.use(i18n.middleware);
-
     // specify that this is our api (used by error handler)
     app.context.api = true;
 
     // override koa's undocumented error handler
-    // TODO: <https://github.com/sindresorhus/eslint-plugin-unicorn/issues/174>
+    // <https://github.com/sindresorhus/eslint-plugin-unicorn/issues/174>
     // eslint-disable-next-line unicorn/prefer-add-event-listener
     app.context.onerror = errorHandler;
 
-    // response time
-    app.use(responseTime());
+    // adds `X-Response-Time` header to responses
+    app.use(koaConnect(responseTime));
 
-    // request logger with custom logger
-    app.use(koaLogger({ logger }));
+    // adds or re-uses `X-Request-Id` header
+    app.use(koaConnect(requestId()));
+
+    // use the cabin middleware (adds request-based logging and helpers)
+    app.use(cabin.middleware);
+
+    // compress/gzip
+    app.use(compress());
+
+    // setup localization
+    if (this.config.i18n) {
+      const i18n = this.config.i18n.config
+        ? this.config.i18n
+        : new I18N({ ...this.config.i18n, logger });
+      app.use(i18n.middleware);
+    }
+
+    if (this.config.auth) app.use(auth(this.config.auth));
 
     // rate limiting
     if (this.config.rateLimit)
@@ -146,9 +115,6 @@ class Server {
     // cors
     if (this.config.cors) app.use(cors(this.config.cors));
 
-    // TODO: add `cors-gate`
-    // <https://github.com/mixmaxhq/cors-gate/issues/6>
-
     // security
     app.use(helmet());
 
@@ -161,9 +127,6 @@ class Server {
     // pretty-printed json responses
     app.use(json());
 
-    // add cabin middleware
-    app.use(cabin.middleware);
-
     // 404 handler
     app.use(koa404Handler);
 
@@ -171,23 +134,17 @@ class Server {
     if (this.config.passport) app.use(this.config.passport.initialize());
 
     // configure timeout
-    app.use(async (ctx, next) => {
-      try {
-        const timeout = new Timeout({
-          ms: this.config.timeoutMs,
-          message: ctx.req.t(
-            oneLine`Sorry, your request has timed out.
-            We have been alerted of this issue.  Please try again.`
-          )
-        });
-        await timeout.middleware(ctx, next);
-      } catch (err) {
-        ctx.throw(err);
-      }
-    });
+    if (this.config.timeout) {
+      const timeout = new Timeout(this.config.timeout);
+      app.use(timeout.middleware);
+    }
 
     // store the user's last ip address in the background
     app.use(storeIPAddress.middleware);
+
+    // allow before hooks to get setup
+    if (_.isFunction(this.config.hookBeforeRoutes))
+      this.config.hookBeforeRoutes(app);
 
     // mount the app's defined and nested routes
     if (this.config.routes) {
@@ -198,15 +155,12 @@ class Server {
 
     // start server on either http or https
     if (this.config.protocol === 'https')
-      server = https.createServer(this.config.ssl, app.callback());
+      server = http2.createServer(this.config.ssl, app.callback());
     else server = http.createServer(app.callback());
 
     // expose app and server
     this.app = app;
     this.server = server;
-
-    // Expose app so we can test it without the server wrapper
-    if (env === 'test') this.app = app;
 
     autoBind(this);
   }
@@ -222,7 +176,7 @@ class Server {
       fn = function() {
         const { port } = this.address();
         logger.info(
-          `api server listening on ${port} (LAN: ${ip.address()}:${port})`
+          `Lad API server listening on ${port} (LAN: ${ip.address()}:${port})`
         );
       };
 
@@ -236,4 +190,4 @@ class Server {
   }
 }
 
-module.exports = Server;
+module.exports = API;

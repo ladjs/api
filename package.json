@@ -11,52 +11,61 @@
     "url": "https://github.com/ladjs/api/issues",
     "email": "niftylettuce@gmail.com"
   },
+  "commitlint": {
+    "extends": [
+      "@commitlint/config-conventional"
+    ]
+  },
   "contributors": [
     "Nick Baugh <niftylettuce@gmail.com> (http://niftylettuce.com/)"
   ],
   "dependencies": {
-    "@ladjs/i18n": "^0.3.2",
+    "@ladjs/i18n": "^1.1.0",
+    "@ladjs/shared-config": "^0.0.2",
     "@ladjs/store-ip-address": "^0.0.5",
-    "boolean": "^0.1.3",
-    "cabin": "^2.0.2",
-    "common-tags": "^1.8.0",
+    "boolean": "^0.2.0",
+    "cabin": "^2.0.6",
+    "express-request-id": "^1.4.1",
     "ip": "^1.1.5",
     "kcors": "^2.2.2",
-    "koa": "^2.5.2",
+    "koa": "^2.6.2",
     "koa-404-handler": "^0.0.2",
+    "koa-basic-auth": "^4.0.0",
     "koa-better-error-handler": "^1.3.6",
-    "koa-better-timeout": "^0.0.2",
+    "koa-better-timeout": "^0.0.3",
     "koa-bodyparser": "^4.2.1",
     "koa-compress": "^3.0.0",
     "koa-conditional-get": "^2.0.0",
+    "koa-connect": "^2.0.1",
     "koa-etag": "^3.0.0",
     "koa-helmet": "^4.0.0",
     "koa-json": "^2.0.2",
-    "koa-logger": "https://github.com/niftylettuce/logger",
     "koa-no-trailing-slash": "^2.1.0",
-    "koa-response-time": "^2.0.0",
     "koa-simple-ratelimit": "^2.4.1",
-    "lodash": "^4.17.10",
-    "redis": "^2.8.0"
+    "lodash": "^4.17.11",
+    "redis": "^2.8.0",
+    "response-time": "^2.3.2",
+    "spdy": "^4.0.0"
   },
   "devDependencies": {
-    "auto-bind": "^1.2.1",
-    "ava": "^0.25.0",
-    "codecov": "^3.0.4",
+    "@commitlint/cli": "^7.3.1",
+    "@commitlint/config-conventional": "^7.3.1",
+    "auto-bind": "^2.0.0",
+    "ava": "^1.1.0",
+    "codecov": "^3.1.0",
     "cross-env": "^5.2.0",
-    "eslint": "5.2.0",
-    "eslint-config-prettier": "^2.9.0",
-    "eslint-plugin-prettier": "^2.6.2",
-    "husky": "^0.14.3",
+    "eslint": "^5.12.0",
+    "eslint-config-xo-lass": "^1.0.3",
+    "fixpack": "^2.3.1",
+    "husky": "^1.3.1",
     "koa-router": "^7.4.0",
-    "lint-staged": "^7.2.0",
-    "mongoose": "^5.2.5",
-    "nyc": "^12.0.2",
-    "prettier": "^1.14.0",
-    "remark-cli": "^5.0.0",
-    "remark-preset-github": "^0.0.8",
-    "supertest": "^3.1.0",
-    "xo": "^0.21.1"
+    "lint-staged": "^8.1.0",
+    "mongoose": "^5.4.3",
+    "nyc": "^13.1.0",
+    "remark-cli": "^6.0.1",
+    "remark-preset-github": "^0.0.13",
+    "supertest": "^3.3.0",
+    "xo": "^0.23.0"
   },
   "engines": {
     "node": ">=8.3"
@@ -65,6 +74,12 @@
     "index.js"
   ],
   "homepage": "https://github.com/ladjs/api",
+  "husky": {
+    "hooks": {
+      "pre-commit": "npm test",
+      "commit-msg": "commitlint -E HUSKY_GIT_PARAMS"
+    }
+  },
   "keywords": [
     "api",
     "error",
@@ -91,16 +106,27 @@
   ],
   "license": "MIT",
   "lint-staged": {
-    "*.{js,jsx,mjs,ts,tsx,css,less,scss,json,graphql}": [
-      "prettier --write --single-quote --trailing-comma none",
-      "git add"
-    ],
-    "*.md": [
-      "remark . -qfo",
-      "git add"
-    ]
+    "linters": {
+      "*.js": [
+        "xo --fix",
+        "git add"
+      ],
+      "*.md": [
+        "remark . -qfo",
+        "git add"
+      ],
+      "package.json": [
+        "fixpack",
+        "git add"
+      ]
+    }
   },
   "main": "index.js",
+  "prettier": {
+    "singleQuote": true,
+    "bracketSpacing": true,
+    "trailingComma": "none"
+  },
   "remarkConfig": {
     "plugins": [
       "preset-github"
@@ -111,40 +137,21 @@
     "url": "https://github.com/ladjs/api"
   },
   "scripts": {
+    "ava": "cross-env NODE_ENV=test ava",
     "coverage": "nyc report --reporter=text-lcov > coverage.lcov && codecov",
     "lint": "xo && remark . -qfo",
-    "precommit": "lint-staged && npm test",
-    "test": "npm run lint && npm run test-coverage",
-    "test-coverage": "cross-env NODE_ENV=test nyc ava"
+    "nyc": "cross-env NODE_ENV=test nyc ava",
+    "test": "npm run lint && npm run ava",
+    "test-coverage": "npm run lint && npm run nyc"
   },
   "xo": {
-    "extends": "prettier",
-    "plugins": [
-      "prettier"
+    "prettier": true,
+    "space": true,
+    "extends": [
+      "xo-lass"
     ],
-    "parserOptions": {
-      "sourceType": "script"
-    },
-    "rules": {
-      "prettier/prettier": [
-        "error",
-        {
-          "singleQuote": true,
-          "bracketSpacing": true,
-          "trailingComma": "none"
-        }
-      ],
-      "max-len": [
-        "error",
-        {
-          "code": 80,
-          "ignoreUrls": true
-        }
-      ],
-      "capitalized-comments": "off",
-      "camelcase": "off",
-      "no-warning-comments": "off"
-    },
-    "space": true
+    "ignores": [
+      "config.js"
+    ]
   }
 }

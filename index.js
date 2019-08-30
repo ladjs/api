@@ -25,6 +25,7 @@ const rateLimiter = require('koa-simple-ratelimit');
 const redis = require('redis');
 const removeTrailingSlashes = require('koa-no-trailing-slash');
 const requestId = require('express-request-id');
+const requestReceived = require('request-received');
 const responseTime = require('response-time');
 const sharedConfig = require('@ladjs/shared-config');
 
@@ -75,8 +76,12 @@ class API {
     // eslint-disable-next-line unicorn/prefer-add-event-listener
     app.context.onerror = errorHandler;
 
+    // adds request received hrtime and date symbols to request object
+    // (which is used by Cabin internally to add `request.timestamp` to logs
+    app.use(requestReceived);
+
     // adds `X-Response-Time` header to responses
-    app.use(koaConnect(responseTime));
+    app.use(koaConnect(responseTime()));
 
     // adds or re-uses `X-Request-Id` header
     app.use(koaConnect(requestId()));

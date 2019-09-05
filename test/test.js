@@ -1,6 +1,6 @@
 const test = require('ava');
 const request = require('supertest');
-const Router = require('koa-router');
+const Router = require('@koa/router');
 const API = require('..');
 
 test('allows custom routes', async t => {

@@ -36,7 +36,10 @@ class API {
     };
 
     const { logger } = this.config;
-    const storeIPAddress = new StoreIPAddress({ logger });
+    const storeIPAddress = new StoreIPAddress({
+      logger,
+      ...this.config.storeIPAddress
+    });
     const cabin = new Cabin({
       logger,
       ...this.config.cabin

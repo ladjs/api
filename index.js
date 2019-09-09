@@ -1,5 +1,6 @@
 const http = require('http');
-const http2 = require('spdy');
+const http2 = require('http2');
+const util = require('util');
 
 const Cabin = require('cabin');
 const I18N = require('@ladjs/i18n');
@@ -18,7 +19,6 @@ const cors = require('kcors');
 const errorHandler = require('koa-better-error-handler');
 const etag = require('koa-etag');
 const helmet = require('koa-helmet');
-const ip = require('ip');
 const json = require('koa-json');
 const koa404Handler = require('koa-404-handler');
 const koaConnect = require('koa-connect');
@@ -160,38 +160,25 @@ class API {
 
     // start server on either http or https
     if (this.config.protocol === 'https')
-      server = http2.createServer(this.config.ssl, app.callback());
+      server = http2.createSecureServer(this.config.ssl, app.callback());
     else server = http.createServer(app.callback());
 
-    // expose app and server
+    // expose app, server, client
     this.app = app;
     this.server = server;
+    this.client = client;
 
     autoBind(this);
   }
 
-  listen(port, fn) {
-    if (_.isFunction(port)) {
-      fn = port;
-      port = null;
-    }
-
-    const { logger } = this.config;
-    if (!_.isFunction(fn))
-      fn = function() {
-        const { port } = this.address();
-        logger.info(
-          `Lad API server listening on ${port} (LAN: ${ip.address()}:${port})`
-        );
-      };
-
-    this.server = this.server.listen(port, fn);
-    return this.server;
+  async listen(port) {
+    const { server } = this;
+    this.server = await util.promisify(server.listen).bind(server)(port);
   }
 
-  close(fn) {
-    this.server.close(fn);
-    return this;
+  async close() {
+    const { server } = this;
+    this.server = await util.promisify(server.close).bind(server);
   }
 }
 

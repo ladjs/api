@@ -22,7 +22,8 @@
   "dependencies": {
     "@koa/router": "^8.0.1",
     "@ladjs/i18n": "^1.2.1",
-    "@ladjs/shared-config": "^0.0.4",
+    "@ladjs/redis": "^1.0.2",
+    "@ladjs/shared-config": "^0.0.7",
     "@ladjs/store-ip-address": "^0.0.6",
     "boolean": "^1.0.0",
     "cabin": "^5.0.1",

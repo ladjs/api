@@ -26,7 +26,7 @@
     "@ladjs/shared-config": "^0.0.9",
     "@ladjs/store-ip-address": "^0.0.6",
     "boolean": "^1.0.0",
-    "cabin": "^5.0.3",
+    "cabin": "^5.0.4",
     "express-request-id": "^1.4.1",
     "kcors": "^2.2.2",
     "koa": "^2.8.1",

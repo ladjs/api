@@ -21,12 +21,12 @@ const helmet = require('koa-helmet');
 const json = require('koa-json');
 const koa404Handler = require('koa-404-handler');
 const koaConnect = require('koa-connect');
-const rateLimiter = require('koa-simple-ratelimit');
 const removeTrailingSlashes = require('koa-no-trailing-slash');
 const requestId = require('express-request-id');
 const requestReceived = require('request-received');
 const responseTime = require('response-time');
 const sharedConfig = require('@ladjs/shared-config');
+const { ratelimit } = require('koa-simple-ratelimit');
 
 class API {
   constructor(config) {
@@ -104,7 +104,7 @@ class API {
     // rate limiting
     if (this.config.rateLimit)
       app.use(
-        rateLimiter({
+        ratelimit({
           ...this.config.rateLimit,
           db: client
         })

@@ -21,7 +21,7 @@
   ],
   "dependencies": {
     "@koa/router": "^8.0.2",
-    "@ladjs/i18n": "^1.2.1",
+    "@ladjs/i18n": "^1.2.2",
     "@ladjs/redis": "^1.0.3",
     "@ladjs/shared-config": "^0.0.10",
     "@ladjs/store-ip-address": "^0.0.6",
@@ -56,14 +56,14 @@
     "eslint": "^6.6.0",
     "eslint-config-xo-lass": "^1.0.3",
     "fixpack": "^2.3.1",
-    "husky": "^3.0.9",
-    "lint-staged": "^9.4.2",
-    "mongoose": "^5.7.9",
+    "husky": "^3.1.0",
+    "lint-staged": "^9.4.3",
+    "mongoose": "^5.7.12",
     "nyc": "^14.1.1",
     "remark-cli": "^7.0.1",
     "remark-preset-github": "^0.0.16",
     "supertest": "^4.0.2",
-    "xo": "0.24"
+    "xo": "^0.25.3"
   },
   "engines": {
     "node": ">=8.3"

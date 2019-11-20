@@ -72,7 +72,6 @@ class API {
 
     // override koa's undocumented error handler
     // <https://github.com/sindresorhus/eslint-plugin-unicorn/issues/174>
-    // eslint-disable-next-line unicorn/prefer-add-event-listener
     app.context.onerror = errorHandler;
 
     // adds request received hrtime and date symbols to request object

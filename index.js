@@ -11,7 +11,6 @@ const Timeout = require('koa-better-timeout');
 const _ = require('lodash');
 const auth = require('koa-basic-auth');
 const bodyParser = require('koa-bodyparser');
-const boolean = require('boolean');
 const compress = require('koa-compress');
 const conditional = require('koa-conditional-get');
 const cors = require('kcors');
@@ -26,6 +25,7 @@ const requestId = require('express-request-id');
 const requestReceived = require('request-received');
 const responseTime = require('response-time');
 const sharedConfig = require('@ladjs/shared-config');
+const { boolean } = require('boolean');
 const { ratelimit } = require('koa-simple-ratelimit');
 
 class API {

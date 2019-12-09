@@ -437,10 +437,10 @@
   resolved "https://registry.yarnpkg.com/@hapi/hoek/-/hoek-8.5.0.tgz#2f9ce301c8898e1c3248b0a8564696b24d1a9a5a"
   integrity sha512-7XYT10CZfPsH7j9F1Jmg1+d0ezOux2oM2GfArAzLwWe4mE2Dr3hVjsAL6+TFY49RRJlCdJDMw3nJsLFroTc8Kw==
 
-"@koa/router@^8.0.2":
-  version "8.0.2"
-  resolved "https://registry.yarnpkg.com/@koa/router/-/router-8.0.2.tgz#46a48d58cb0d76dc7a3735f14d1e66bbe2116575"
-  integrity sha512-7Wa8yXBmz9HjmZOr+xfMVuxFPNObdkiQFBiwF9SQ8zFqHykwBHcJA/mLqqxU2NKoeXRPBKUOPeOjwgR+gyadcA==
+"@koa/router@^8.0.3":
+  version "8.0.3"
+  resolved "https://registry.yarnpkg.com/@koa/router/-/router-8.0.3.tgz#657a4b91f4085523d36c5ea1fdd32b5e33b215f7"
+  integrity sha512-XQsWpkZR3TKeEWXgaSJCH2TBoaKWJnGyqA+xrXvvmvpvGzOWDgrZGNsJzGLI8qaGFpIbvKUcIuj4ajR6+8nCOQ==
   dependencies:
     debug "^3.1.0"
     http-errors "^1.3.1"
@@ -1154,10 +1154,10 @@ bytes@3.1.0, bytes@^3.0.0:
   resolved "https://registry.yarnpkg.com/bytes/-/bytes-3.1.0.tgz#f6cf7933a360e0588fa9fde85651cdc7f805d1f6"
   integrity sha512-zauLjrfCG+xvoyaqLoV8bLVXXNGC4JqlxFCutSDWA6fJrTo2ZuvLYTqZ7aHBLZSMOopbzwv8f+wZcVzfVTI2Dg==
 
-cabin@^5.0.10:
-  version "5.0.10"
-  resolved "https://registry.yarnpkg.com/cabin/-/cabin-5.0.10.tgz#df0e625163c2fdebf900c62aab582b9785c4db4b"
-  integrity sha512-xDQFSYLba+spRqeo2x3anZ0QDjiDfuyi+BaKNiDj9KhHlwiIg5HFj7shA6giJf8Utn/CuHHWo67x57+ZOwJ3AA==
+cabin@^5.0.11:
+  version "5.0.11"
+  resolved "https://registry.yarnpkg.com/cabin/-/cabin-5.0.11.tgz#b02f5fa9f5551597b3938efefc75b9b1c5c3db9a"
+  integrity sha512-Yn4fVHFlLsjmHwXuadLnXcIDhu1faD4JgUnWgjLKHbKcd+jI86mFTjuFUHarS/+0lhm5OtNBFmroPAqz1k3JGw==
   dependencies:
     ansi-colors "^4.1.1"
     axe "^4.0.5"
@@ -5095,10 +5095,10 @@ mongoose-legacy-pluralize@1.0.2:
   resolved "https://registry.yarnpkg.com/mongoose-legacy-pluralize/-/mongoose-legacy-pluralize-1.0.2.tgz#3ba9f91fa507b5186d399fb40854bff18fb563e4"
   integrity sha512-Yo/7qQU4/EyIS8YDFSeenIvXxZN+ld7YdV9LqFVQJzTLye8unujAWPZ4NWKfFA+RNjh+wvTWKY9Z3E5XM6ZZiQ==
 
-mongoose@^5.7.13:
-  version "5.7.13"
-  resolved "https://registry.yarnpkg.com/mongoose/-/mongoose-5.7.13.tgz#d8ebbc15cfb19d014cf1fbd4b7af413d75952d46"
-  integrity sha512-MoTCETTIfXU1PqIYc+YAkhSB3uzK5xseh6ysAUnoOowkqS66OjBJtsL/bcgAKi6XfMYkFU6M1abKyuL7k//xeg==
+mongoose@^5.8.0:
+  version "5.8.0"
+  resolved "https://registry.yarnpkg.com/mongoose/-/mongoose-5.8.0.tgz#ddbfd6849632ed5840ec3e5faeaab1945bb3b650"
+  integrity sha512-+VqrLGmHoDW/72yaXgiXSF7E/JcZ8Iyt7etrd4x3+Bj0z7k6GHHUBgGHP5ySPoG4J412RFuvHqx6xEOIuUrcfQ==
   dependencies:
     bson "~1.1.1"
     kareem "2.3.1"

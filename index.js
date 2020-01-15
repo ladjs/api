@@ -36,10 +36,15 @@ class API {
     };
 
     const { logger } = this.config;
-    const storeIPAddress = new StoreIPAddress({
-      logger,
-      ...this.config.storeIPAddress
-    });
+
+    let storeIPAddress = false;
+
+    if (this.config.storeIPAddress)
+      storeIPAddress = new StoreIPAddress({
+        logger,
+        ...this.config.storeIPAddress
+      });
+
     const cabin = new Cabin({
       logger,
       ...this.config.cabin
@@ -143,7 +148,7 @@ class API {
     }
 
     // store the user's last ip address in the background
-    app.use(storeIPAddress.middleware);
+    if (storeIPAddress) app.use(storeIPAddress.middleware);
 
     // allow before hooks to get setup
     if (_.isFunction(this.config.hookBeforeRoutes))

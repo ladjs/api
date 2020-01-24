@@ -1,7 +1,7 @@
 {
   "name": "@ladjs/api",
   "description": "API server for Lad",
-  "version": "0.2.35",
+  "version": "0.2.36",
   "author": "Nick Baugh <niftylettuce@gmail.com> (http://niftylettuce.com/)",
   "ava": {
     "failFast": true,

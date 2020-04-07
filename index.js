@@ -125,7 +125,9 @@ class API {
     if (this.config.cors) app.use(cors(this.config.cors));
 
     // security
-    app.use(helmet());
+    if (this.config.helmet) {
+      app.use(helmet(this.config.helmet));
+    }
 
     // remove trailing slashes
     app.use(removeTrailingSlashes());

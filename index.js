@@ -17,6 +17,7 @@ const conditional = require('koa-conditional-get');
 const cors = require('kcors');
 const errorHandler = require('koa-better-error-handler');
 const etag = require('koa-etag');
+const expectCt = require('koa-expect-ct');
 const helmet = require('koa-helmet');
 const json = require('koa-json');
 const koa404Handler = require('koa-404-handler');
@@ -127,6 +128,16 @@ class API {
     // security
     if (this.config.helmet) {
       app.use(helmet(this.config.helmet));
+    }
+
+    // add Expect-CT header for cert transparency
+    if (this.config.expectCT) {
+      app.use(
+        expectCt({
+          enforce: true,
+          maxAge: 60 * 60 * 1000
+        })
+      );
     }
 
     // remove trailing slashes

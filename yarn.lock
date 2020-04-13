@@ -531,10 +531,10 @@
   dependencies:
     ioredis "^4.14.0"
 
-"@ladjs/shared-config@^1.0.3":
-  version "1.0.3"
-  resolved "https://registry.yarnpkg.com/@ladjs/shared-config/-/shared-config-1.0.3.tgz#930382c6e2e61abb0aec32fbace2adce3c64906c"
-  integrity sha512-ZXemjUxYBZXZuRgrwpilwJTqTIulZr4+vFbM4U2/febUClVL9sZPR9/o1HuigZZ93jMJj8S/rihYQj9cbE3YNQ==
+"@ladjs/shared-config@^1.0.4":
+  version "1.0.4"
+  resolved "https://registry.yarnpkg.com/@ladjs/shared-config/-/shared-config-1.0.4.tgz#0221f70afddde6501026ed734a3ce1a778a37f48"
+  integrity sha512-EMrgoLUY1EGqIaAR75wHBjMzrfG3fGdAakzUJ8SUrAWPrk3sbgtAfP2Abz7+6udiyVTQdnk4KNKSR3fXIjXeng==
   dependencies:
     boolean "^3.0.1"
     is-string-and-not-blank "^0.0.2"
@@ -2498,9 +2498,9 @@ eslint-plugin-node@^10.0.0:
     semver "^6.1.0"
 
 eslint-plugin-prettier@^3.1.1:
-  version "3.1.2"
-  resolved "https://registry.yarnpkg.com/eslint-plugin-prettier/-/eslint-plugin-prettier-3.1.2.tgz#432e5a667666ab84ce72f945c72f77d996a5c9ba"
-  integrity sha512-GlolCC9y3XZfv3RQfwGew7NnuFDKsfI4lbvRK+PIIo23SFH+LemGs4cKwzAaRa+Mdb+lQO/STaIayno8T5sJJA==
+  version "3.1.3"
+  resolved "https://registry.yarnpkg.com/eslint-plugin-prettier/-/eslint-plugin-prettier-3.1.3.tgz#ae116a0fc0e598fdae48743a4430903de5b4e6ca"
+  integrity sha512-+HG5jmu/dN3ZV3T6eCD7a4BlAySdN7mLIbJYo0z1cFQuI+r2DiTJEFeF68ots93PsnrMxbzIZ2S/ieX+mkrBeQ==
   dependencies:
     prettier-linter-helpers "^1.0.0"
 
@@ -4405,11 +4405,6 @@ koa-etag@^3.0.0:
   dependencies:
     etag "^1.3.0"
     mz "^2.1.0"
-
-koa-expect-ct@^0.0.1:
-  version "0.0.1"
-  resolved "https://registry.yarnpkg.com/koa-expect-ct/-/koa-expect-ct-0.0.1.tgz#fc1830625aaca56444d0dfded16c8264702b65d9"
-  integrity sha512-aeihB0sxvmyRIP/Mm4b25ZIu68YlLXp8/4F0GfDteZpFbweAJNsmTegpvS4Ae9swdz5IvTHF1dKxhuKIobMs2g==
 
 koa-helmet@^5.2.0:
   version "5.2.0"

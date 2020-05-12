@@ -12,7 +12,6 @@ const Timeout = require('koa-better-timeout');
 const _ = require('lodash');
 const auth = require('koa-basic-auth');
 const bodyParser = require('koa-bodyparser');
-const compress = require('koa-compress');
 const conditional = require('koa-conditional-get');
 const cors = require('kcors');
 const errorHandler = require('koa-better-error-handler');
@@ -92,9 +91,6 @@ class API {
 
     // use the cabin middleware (adds request-based logging and helpers)
     app.use(cabin.middleware);
-
-    // compress/gzip
-    app.use(compress());
 
     // setup localization
     if (this.config.i18n) {

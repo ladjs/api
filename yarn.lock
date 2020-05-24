@@ -377,10 +377,10 @@
   resolved "https://registry.yarnpkg.com/@ladjs/format-util/-/format-util-1.0.4.tgz#dd16ecee7b9d1deb56e1a4968dc5e9ac54499df3"
   integrity sha512-hZere0rUga8kTzSTFbHREXpD9E/jwi94+B5RyLAmMIzl/w/EK1z7rFEnMHzPkU4AZkL42JWSsGXoV8LXMihybg==
 
-"@ladjs/i18n@^3.0.10":
-  version "3.0.10"
-  resolved "https://registry.yarnpkg.com/@ladjs/i18n/-/i18n-3.0.10.tgz#ae99cde9c0d6483e8b15c0f4d6cf8ccaf4162af2"
-  integrity sha512-3fgGdiTwMrbp0hZKx7qrns4jGpc0zjxJgUY1I7uZrXtt1NSVKG/b431WpZLTZiM06facW3D5Shj3QAsapWvsvg==
+"@ladjs/i18n@^3.0.12":
+  version "3.0.12"
+  resolved "https://registry.yarnpkg.com/@ladjs/i18n/-/i18n-3.0.12.tgz#70a684eec7ce48e37baf4b5ab47ed3df0bb64239"
+  integrity sha512-+jCZq0la/25VndOLYs0oi1hDnDFznfMCPEYDS8NPfLbw7aaJ0YSwi/rlB/GI/fHw87UgtvZ/rhSVADs0/c3hEQ==
   dependencies:
     "@hapi/boom" "^9.1.0"
     boolean "3.0.1"
@@ -401,13 +401,14 @@
   dependencies:
     ioredis "^4.14.0"
 
-"@ladjs/shared-config@^2.0.8":
-  version "2.0.8"
-  resolved "https://registry.yarnpkg.com/@ladjs/shared-config/-/shared-config-2.0.8.tgz#602d537876a08003e9e4195b86fadcbf7364b604"
-  integrity sha512-93RcEuP7cQDweDswHadwkZAbvQecdqX0S5xSwYrF6yeNtpBj0n+612/KfxkVNIqwcPBki072+hBgR+PUkIquyA==
+"@ladjs/shared-config@^2.0.13":
+  version "2.0.13"
+  resolved "https://registry.yarnpkg.com/@ladjs/shared-config/-/shared-config-2.0.13.tgz#5f08eb3e67ec31eba3ab3d579c55f9dcc89eecf5"
+  integrity sha512-T1bXGDIzGXw6fBMzCRyuB/JzRHtXlBO4AHNIz5LfXhe682kNit1yZEZdxUrk2gGEyJzngUigCybM7Zrz+0r2nQ==
   dependencies:
     boolean "^3.0.1"
     is-string-and-not-blank "^0.0.2"
+    ms "^2.1.2"
 
 "@ladjs/store-ip-address@^0.0.7":
   version "0.0.7"

@@ -32,6 +32,10 @@ class API {
   constructor(config) {
     this.config = {
       ...sharedConfig('API'),
+      // <https://github.com/ladjs/bull>
+      // this is an instance of bull passed to context
+      // so users can use it in routes, e.g. `ctx.bull`
+      bull: false,
       ...config
     };
 
@@ -78,6 +82,10 @@ class API {
     // override koa's undocumented error handler
     // <https://github.com/sindresorhus/eslint-plugin-unicorn/issues/174>
     app.context.onerror = errorHandler;
+
+    // set bull to be shared throughout app context
+    // (very useful for not creating additional connections)
+    if (this.config.bull) app.context.bull = this.config.bull;
 
     // adds request received hrtime and date symbols to request object
     // (which is used by Cabin internally to add `request.timestamp` to logs

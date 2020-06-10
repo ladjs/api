@@ -13,10 +13,8 @@ const _ = require('lodash');
 const auth = require('koa-basic-auth');
 const bodyParser = require('koa-bodyparser');
 const conditional = require('koa-conditional-get');
-const cors = require('kcors');
 const errorHandler = require('koa-better-error-handler');
 const etag = require('koa-etag');
-const helmet = require('koa-helmet');
 const json = require('koa-json');
 const koa404Handler = require('koa-404-handler');
 const koaConnect = require('koa-connect');
@@ -124,12 +122,6 @@ class API {
 
     // etag
     app.use(etag());
-
-    // cors
-    if (this.config.cors) app.use(cors(this.config.cors));
-
-    // security
-    if (this.config.helmet) app.use(helmet(this.config.helmet));
 
     // remove trailing slashes
     app.use(removeTrailingSlashes());

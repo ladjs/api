@@ -12,6 +12,7 @@ const _ = require('lodash');
 const auth = require('koa-basic-auth');
 const bodyParser = require('koa-bodyparser');
 const conditional = require('koa-conditional-get');
+const cors = require('kcors');
 const errorHandler = require('koa-better-error-handler');
 const etag = require('koa-etag');
 const json = require('koa-json');
@@ -54,6 +55,10 @@ class API {
     // initialize the app
     const app = new Koa();
 
+    // listen for error and log events emitted by app
+    app.on('error', (err, ctx) => ctx.logger.error(err));
+    app.on('log', logger.log);
+
     // initialize redis
     const client = new Redis(
       this.config.redis,
@@ -66,23 +71,22 @@ class API {
     // later on with `server.close()`
     let server;
 
-    // listen for error and log events emitted by app
-    app.on('error', (err, ctx) => ctx.logger.error(err));
-    app.on('log', logger.log);
+    // override koa's undocumented error handler
+    // <https://github.com/sindresorhus/eslint-plugin-unicorn/issues/174>
+    app.context.onerror = errorHandler;
+
+    // allow middleware to access redis client
+    app.context.client = client;
+
+    // set bull to be shared throughout app context
+    // (very useful for not creating additional connections)
+    if (this.config.bull) app.context.bull = this.config.bull;
 
     // only trust proxy if enabled
     app.proxy = boolean(process.env.TRUST_PROXY);
 
     // specify that this is our api (used by error handler)
     app.context.api = true;
-
-    // override koa's undocumented error handler
-    // <https://github.com/sindresorhus/eslint-plugin-unicorn/issues/174>
-    app.context.onerror = errorHandler;
-
-    // set bull to be shared throughout app context
-    // (very useful for not creating additional connections)
-    if (this.config.bull) app.context.bull = this.config.bull;
 
     // adds request received hrtime and date symbols to request object
     // (which is used by Cabin internally to add `request.timestamp` to logs
@@ -121,6 +125,9 @@ class API {
 
     // etag
     app.use(etag());
+
+    // cors
+    if (this.config.cors) app.use(cors(this.config.cors));
 
     // remove trailing slashes
     app.use(removeTrailingSlashes());

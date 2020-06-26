@@ -41,7 +41,6 @@
     "koa-etag": "^3.0.0",
     "koa-json": "^2.0.2",
     "koa-no-trailing-slash": "^2.1.0",
-    "koa-qs": "^3.0.0",
     "koa-simple-ratelimit": "^4.0.2",
     "lodash": "^4.17.15",
     "request-received": "^0.0.3",

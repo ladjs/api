@@ -19,7 +19,6 @@ const etag = require('koa-etag');
 const json = require('koa-json');
 const koa404Handler = require('koa-404-handler');
 const koaConnect = require('koa-connect');
-const koaQs = require('koa-qs');
 const removeTrailingSlashes = require('koa-no-trailing-slash');
 const requestId = require('express-request-id');
 const requestReceived = require('request-received');
@@ -36,8 +35,6 @@ class API {
       // this is an instance of bull passed to context
       // so users can use it in routes, e.g. `ctx.bull`
       bull: false,
-      // <https://github.com/koajs/qs>
-      koaQs: ['extended'],
       ...config
     };
 
@@ -103,8 +100,6 @@ class API {
 
     // adds or re-uses `X-Request-Id` header
     app.use(koaConnect(requestId()));
-
-    if (this.config.koaQs) koaQs(app, ...this.config.koaQs);
 
     // use the cabin middleware (adds request-based logging and helpers)
     app.use(cabin.middleware);

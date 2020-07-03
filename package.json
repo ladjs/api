@@ -20,7 +20,7 @@
     "Nick Baugh <niftylettuce@gmail.com> (http://niftylettuce.com/)"
   ],
   "dependencies": {
-    "@koa/router": "^9.0.1",
+    "@koa/router": "^9.1.0",
     "@ladjs/i18n": "^3.0.12",
     "@ladjs/redis": "^1.0.4",
     "@ladjs/shared-config": "^3.0.8",
@@ -37,7 +37,7 @@
     "koa-bodyparser": "^4.3.0",
     "koa-compress": "^4.0.1",
     "koa-conditional-get": "^2.0.0",
-    "koa-connect": "^2.0.1",
+    "koa-connect": "^2.1.0",
     "koa-etag": "^3.0.0",
     "koa-json": "^2.0.2",
     "koa-no-trailing-slash": "^2.1.0",
@@ -57,7 +57,7 @@
     "fixpack": "^3.0.6",
     "husky": "^4.2.5",
     "lint-staged": "10.2.11",
-    "mongoose": "^5.9.20",
+    "mongoose": "^5.9.21",
     "nyc": "^15.1.0",
     "remark-cli": "^8.0.0",
     "remark-preset-github": "^2.0.0",

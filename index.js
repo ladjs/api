@@ -35,10 +35,6 @@ class API {
   constructor(config) {
     this.config = {
       ...sharedConfig('API'),
-      // <https://github.com/ladjs/bull>
-      // this is an instance of bull passed to context
-      // so users can use it in routes, e.g. `ctx.bull`
-      bull: false,
       ...config
     };
 
@@ -84,10 +80,6 @@ class API {
 
     // allow middleware to access redis client
     app.context.client = client;
-
-    // set bull to be shared throughout app context
-    // (very useful for not creating additional connections)
-    if (this.config.bull) app.context.bull = this.config.bull;
 
     // only trust proxy if enabled
     app.proxy = boolean(process.env.TRUST_PROXY);

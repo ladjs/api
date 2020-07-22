@@ -3,10 +3,10 @@ const request = require('supertest');
 const Router = require('@koa/router');
 const API = require('..');
 
-test('allows custom routes', async t => {
+test('allows custom routes', async (t) => {
   const router = new Router();
 
-  router.get('/', ctx => {
+  router.get('/', (ctx) => {
     ctx.body = { ok: 'ok' };
   });
 
@@ -14,7 +14,7 @@ test('allows custom routes', async t => {
     routes: router.routes()
   });
 
-  const res = await request(api.server).get('/');
-  t.is(res.status, 200);
-  t.is(res.body.ok, 'ok');
+  const response = await request(api.server).get('/');
+  t.is(response.status, 200);
+  t.is(response.body.ok, 'ok');
 });

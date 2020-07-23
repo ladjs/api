@@ -326,24 +326,12 @@
   dependencies:
     arrify "^1.0.1"
 
-"@hapi/boom@^7.4.3":
-  version "7.4.11"
-  resolved "https://registry.yarnpkg.com/@hapi/boom/-/boom-7.4.11.tgz#37af8417eb9416aef3367aa60fa04a1a9f1fc262"
-  integrity sha512-VSU/Cnj1DXouukYxxkes4nNJonCnlogHvIff1v1RVoN4xzkKhMXX+GRmb3NyH1iar10I9WFPDv2JPwfH3GaV0A==
-  dependencies:
-    "@hapi/hoek" "8.x.x"
-
 "@hapi/boom@^9.1.0":
   version "9.1.0"
   resolved "https://registry.yarnpkg.com/@hapi/boom/-/boom-9.1.0.tgz#0d9517657a56ff1e0b42d0aca9da1b37706fec56"
   integrity sha512-4nZmpp4tXbm162LaZT45P7F7sgiem8dwAh2vHWT6XX24dozNjGMg6BvKCRvtCUcmcXqeMIUqWN8Rc5X8yKuROQ==
   dependencies:
     "@hapi/hoek" "9.x.x"
-
-"@hapi/hoek@8.x.x":
-  version "8.5.1"
-  resolved "https://registry.yarnpkg.com/@hapi/hoek/-/hoek-8.5.1.tgz#fde96064ca446dec8c55a8c2f130957b070c6e06"
-  integrity sha512-yN7kbciD87WzLGc5539Tn0sApjyiGHAJgKvG9W8C7O+6c7qmoQMfVs0W4bX17eqz6C78QJqqFrtgdK5EWf6Qow==
 
 "@hapi/hoek@9.x.x":
   version "9.0.4"
@@ -534,19 +522,6 @@
   version "4.0.0"
   resolved "https://registry.yarnpkg.com/@types/parse-json/-/parse-json-4.0.0.tgz#2f8bb441434d163b35fb8ffdccd7138927ffb8c0"
   integrity sha512-//oorEZjL6sbPcKUaCdIGlIUeH26mgzimjBB77G6XRgnDl/L5wOnpyBGRe/Mmf5CVW3PwEBE1NjiMZ/ssFh4wA==
-
-"@types/prop-types@*":
-  version "15.7.3"
-  resolved "https://registry.yarnpkg.com/@types/prop-types/-/prop-types-15.7.3.tgz#2ab0d5da2e5815f94b0b9d4b95d1e5f243ab2ca7"
-  integrity sha512-KfRL3PuHmqQLOG+2tGpRO26Ctg+Cq1E01D2DMriKEATHgWLfeNDmq9e29Q9WIky0dQ3NPkd1mzYH8Lm936Z9qw==
-
-"@types/react@^16.8.12":
-  version "16.9.43"
-  resolved "https://registry.yarnpkg.com/@types/react/-/react-16.9.43.tgz#c287f23f6189666ee3bebc2eb8d0f84bcb6cdb6b"
-  integrity sha512-PxshAFcnJqIWYpJbLPriClH53Z2WlJcVZE+NP2etUtWQs2s7yIMj3/LDKZT/5CHJ/F62iyjVCDu2H3jHEXIxSg==
-  dependencies:
-    "@types/prop-types" "*"
-    csstype "^2.2.0"
 
 "@types/unist@*", "@types/unist@^2.0.0", "@types/unist@^2.0.2", "@types/unist@^2.0.3":
   version "2.0.3"
@@ -913,13 +888,6 @@ author-regex@^1.0.0:
   version "1.0.0"
   resolved "https://registry.yarnpkg.com/author-regex/-/author-regex-1.0.0.tgz#d08885be6b9bbf9439fe087c76287245f0a81450"
   integrity sha1-0IiFvmubv5Q5/gh8dihyRfCoFFA=
-
-auto-bind@^2.1.0:
-  version "2.1.1"
-  resolved "https://registry.yarnpkg.com/auto-bind/-/auto-bind-2.1.1.tgz#8ae509671ecdfbd5009fc99b0f19ae9c3a2abf50"
-  integrity sha512-NUwV1i9D3vxxY1KnfZgSZ716d6ovY7o8LfOwLhGIPFBowIb6Ln6DBW64+jCqPzUznel2hRSkQnYQqvh7/ldw8A==
-  dependencies:
-    "@types/react" "^16.8.12"
 
 ava@^3.10.1:
   version "3.10.1"
@@ -1921,11 +1889,6 @@ crypto-random-string@^2.0.0:
   version "2.0.0"
   resolved "https://registry.yarnpkg.com/crypto-random-string/-/crypto-random-string-2.0.0.tgz#ef2a7a966ec11083388369baa02ebead229b30d5"
   integrity sha512-v1plID3y9r/lPhviJ1wrXpLeyUIGAZ2SHNYTEapm7/8A9nLPoyvVp3RK/EPFqn5kEznyWgYZNsRtYYIWbuG8KA==
-
-csstype@^2.2.0:
-  version "2.6.11"
-  resolved "https://registry.yarnpkg.com/csstype/-/csstype-2.6.11.tgz#452f4d024149ecf260a852b025e36562a253ffc5"
-  integrity sha512-l8YyEC9NBkSm783PFTvh0FmJy7s5pFKrDp49ZL7zBGX3fWkO+N4EEyan1qqp8cwPLDcD0OSdyY6hAMoxp34JFw==
 
 cuid@^2.1.8:
   version "2.1.8"
@@ -4326,13 +4289,12 @@ koa-better-error-handler@^5.0.0:
     statuses "^2.0.0"
     toidentifier "^1.0.0"
 
-koa-better-timeout@^0.0.4:
-  version "0.0.4"
-  resolved "https://registry.yarnpkg.com/koa-better-timeout/-/koa-better-timeout-0.0.4.tgz#0972fb0ea96fe2f389fc23a9ae84e9833c517676"
-  integrity sha512-/7aez5ytUWZLr5ZcHH4TbcNjh57+arjryx10WbrE+sc33nR/CeEMlnbRk4qHwCDbkBXdp/HNISYMwW+ekKpjyg==
+koa-better-timeout@^0.0.5:
+  version "0.0.5"
+  resolved "https://registry.yarnpkg.com/koa-better-timeout/-/koa-better-timeout-0.0.5.tgz#e180a675ab565768fdcf862850d9fe9effa29117"
+  integrity sha512-98pBqASOaEtwPCaPzke8NknbDlSyUPpbThVNiMR4vAjfhtirQiOhj1br0TFLIqje9geCuLSCklVxtPEquTSLkA==
   dependencies:
-    "@hapi/boom" "^7.4.3"
-    auto-bind "^2.1.0"
+    "@hapi/boom" "^9.1.0"
 
 koa-bodyparser@^4.3.0:
   version "4.3.0"
@@ -6302,7 +6264,7 @@ remark-heading-gap@^3.1.2:
   resolved "https://registry.yarnpkg.com/remark-heading-gap/-/remark-heading-gap-3.1.2.tgz#480b71a655e793848db42b714358b5533d7d5ec3"
   integrity sha512-LNm1B4UveH1BkSLx4OPab0vW/p3KOc+8wV4kd94CHXmhuJ8i+kdroG2AonkUVzbOElc8U8ylxF3WPfmqYbRjJg==
 
-"remark-license@github:niftylettuce/remark-license":
+remark-license@niftylettuce/remark-license:
   version "4.0.1"
   resolved "https://codeload.github.com/niftylettuce/remark-license/tar.gz/17ecb8f64f8f6082414d14f9267a12764e6ddbfb"
   dependencies:

@@ -34,7 +34,7 @@
     "koa-404-handler": "^0.0.2",
     "koa-basic-auth": "^4.0.0",
     "koa-better-error-handler": "^5.0.0",
-    "koa-better-timeout": "^0.0.4",
+    "koa-better-timeout": "^0.0.5",
     "koa-bodyparser": "^4.3.0",
     "koa-compress": "^5.0.1",
     "koa-conditional-get": "^2.0.0",

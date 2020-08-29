@@ -38,18 +38,8 @@ class API {
       ...config
     };
 
-    const { logger } = this.config;
-
-    let storeIPAddress = false;
-
-    if (this.config.storeIPAddress)
-      storeIPAddress = new StoreIPAddress({
-        logger,
-        ...this.config.storeIPAddress
-      });
-
     const cabin = new Cabin({
-      logger,
+      logger: this.config.logger,
       ...this.config.cabin
     });
 
@@ -58,14 +48,16 @@ class API {
 
     // listen for error and log events emitted by app
     app.on('error', (err, ctx) => {
-      ctx.logger[err.status && err.status < 500 ? 'warn' : 'error'](err);
+      const level = err.status && err.status < 500 ? 'warn' : 'error';
+      if (ctx.logger) ctx.logger[level](err);
+      else cabin[level](err);
     });
-    app.on('log', logger.log);
+    app.on('log', cabin.log);
 
     // initialize redis
     const client = new Redis(
       this.config.redis,
-      logger,
+      cabin,
       this.config.redisMonitor
     );
 
@@ -74,18 +66,39 @@ class API {
     // later on with `server.close()`
     let server;
 
-    // override koa's undocumented error handler
-    // <https://github.com/sindresorhus/eslint-plugin-unicorn/issues/174>
-    app.context.onerror = errorHandler;
-
     // allow middleware to access redis client
     app.context.client = client;
+
+    // override koa's undocumented error handler
+    app.context.onerror = errorHandler(false, cabin);
 
     // only trust proxy if enabled
     app.proxy = boolean(process.env.TRUST_PROXY);
 
     // specify that this is our api (used by error handler)
     app.context.api = true;
+
+    // allow before hooks to get setup
+    if (_.isFunction(this.config.hookBeforeSetup))
+      this.config.hookBeforeSetup(app);
+
+    // rate limiting
+    if (this.config.rateLimit)
+      app.use(
+        ratelimit({
+          ...this.config.rateLimit,
+          db: client
+        })
+      );
+
+    // basic auth
+    if (this.config.auth) app.use(auth(this.config.auth));
+
+    // configure timeout
+    if (this.config.timeout) {
+      const timeout = new Timeout(this.config.timeout);
+      app.use(timeout.middleware);
+    }
 
     // adds request received hrtime and date symbols to request object
     // (which is used by Cabin internally to add `request.timestamp` to logs
@@ -104,20 +117,9 @@ class API {
     if (this.config.i18n) {
       const i18n = this.config.i18n.config
         ? this.config.i18n
-        : new I18N({ ...this.config.i18n, logger });
+        : new I18N({ ...this.config.i18n, logger: cabin });
       app.use(i18n.middleware);
     }
-
-    if (this.config.auth) app.use(auth(this.config.auth));
-
-    // rate limiting
-    if (this.config.rateLimit)
-      app.use(
-        ratelimit({
-          ...this.config.rateLimit,
-          db: client
-        })
-      );
 
     // conditional-get
     app.use(conditional());
@@ -137,20 +139,20 @@ class API {
     // pretty-printed json responses
     app.use(json());
 
-    // 404 handler
-    app.use(koa404Handler);
-
     // passport
     if (this.config.passport) app.use(this.config.passport.initialize());
 
-    // configure timeout
-    if (this.config.timeout) {
-      const timeout = new Timeout(this.config.timeout);
-      app.use(timeout.middleware);
+    // store the user's last ip address in the background
+    if (this.config.storeIPAddress) {
+      const storeIPAddress = new StoreIPAddress({
+        logger: cabin,
+        ...this.config.storeIPAddress
+      });
+      app.use(storeIPAddress.middleware);
     }
 
-    // store the user's last ip address in the background
-    if (storeIPAddress) app.use(storeIPAddress.middleware);
+    // 404 handler
+    app.use(koa404Handler);
 
     // allow before hooks to get setup
     if (_.isFunction(this.config.hookBeforeRoutes))

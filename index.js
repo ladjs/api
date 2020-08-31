@@ -78,31 +78,15 @@ class API {
     // specify that this is our api (used by error handler)
     app.context.api = true;
 
-    // allow before hooks to get setup
-    if (_.isFunction(this.config.hookBeforeSetup))
-      this.config.hookBeforeSetup(app);
-
-    // rate limiting
-    if (this.config.rateLimit)
-      app.use(
-        ratelimit({
-          ...this.config.rateLimit,
-          db: client
-        })
-      );
-
-    // basic auth
-    if (this.config.auth) app.use(auth(this.config.auth));
+    // adds request received hrtime and date symbols to request object
+    // (which is used by Cabin internally to add `request.timestamp` to logs
+    app.use(requestReceived);
 
     // configure timeout
     if (this.config.timeout) {
       const timeout = new Timeout(this.config.timeout);
       app.use(timeout.middleware);
     }
-
-    // adds request received hrtime and date symbols to request object
-    // (which is used by Cabin internally to add `request.timestamp` to logs
-    app.use(requestReceived);
 
     // adds `X-Response-Time` header to responses
     app.use(koaConnect(responseTime()));
@@ -113,7 +97,26 @@ class API {
     // use the cabin middleware (adds request-based logging and helpers)
     app.use(cabin.middleware);
 
-    // setup localization
+    // allow before hooks to get setup
+    if (_.isFunction(this.config.hookBeforeSetup))
+      this.config.hookBeforeSetup(app);
+
+    // basic auth
+    if (this.config.auth) app.use(auth(this.config.auth));
+
+    // rate limiting
+    if (this.config.rateLimit)
+      app.use(
+        ratelimit({
+          ...this.config.rateLimit,
+          db: client
+        })
+      );
+
+    // remove trailing slashes
+    app.use(removeTrailingSlashes());
+
+    // i18n
     if (this.config.i18n) {
       const i18n = this.config.i18n.config
         ? this.config.i18n
@@ -129,9 +132,6 @@ class API {
 
     // cors
     if (this.config.cors) app.use(cors(this.config.cors));
-
-    // remove trailing slashes
-    app.use(removeTrailingSlashes());
 
     // body parser
     app.use(bodyParser());

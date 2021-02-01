@@ -19,6 +19,7 @@ const etag = require('koa-etag');
 const json = require('koa-json');
 const koa404Handler = require('koa-404-handler');
 const koaConnect = require('koa-connect');
+const multimatch = require('multimatch');
 const proxyWrap = require('findhit-proxywrap');
 const removeTrailingSlashes = require('koa-no-trailing-slash');
 const requestId = require('express-request-id');
@@ -35,6 +36,7 @@ class API {
   constructor(config) {
     this.config = {
       ...sharedConfig('API'),
+      rateLimitIgnoredGlobs: [],
       ...config
     };
 
@@ -100,6 +102,24 @@ class API {
     if (this.config.auth) app.use(auth(this.config.auth));
 
     // rate limiting
+    if (this.config.rateLimit) {
+      app.use((ctx, next) => {
+        // check against ignored/whitelisted paths
+        if (
+          Array.isArray(this.config.rateLimitIgnoredGlobs) &&
+          this.config.rateLimitIgnoredGlobs.length > 0
+        ) {
+          const match = multimatch(ctx.path, this.config.rateLimitIgnoredGlobs);
+          if (Array.isArray(match) && match.length > 0) return next();
+        }
+
+        return ratelimit({
+          ...this.config.rateLimit,
+          db: client
+        })(ctx, next);
+      });
+    }
+
     if (this.config.rateLimit)
       app.use(
         ratelimit({

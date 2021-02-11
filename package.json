@@ -23,12 +23,11 @@
     "@koa/router": "^10.0.0",
     "@ladjs/i18n": "^7.0.1",
     "@ladjs/redis": "^1.0.7",
-    "@ladjs/shared-config": "^3.0.10",
+    "@ladjs/shared-config": "^4.0.0",
     "@ladjs/store-ip-address": "^0.0.7",
-    "boolean": "3.0.1",
+    "boolean": "^3.0.2",
     "cabin": "^9.0.4",
     "express-request-id": "^1.4.1",
-    "findhit-proxywrap": "^0.3.12",
     "kcors": "^2.2.2",
     "koa": "^2.13.1",
     "koa-404-handler": "^0.0.2",
@@ -57,9 +56,9 @@
     "eslint": "^7.19.0",
     "eslint-config-xo-lass": "^1.0.5",
     "fixpack": "^4.0.0",
-    "husky": "^4.3.8",
-    "lint-staged": "10.5.3",
-    "mongoose": "^5.11.14",
+    "husky": "^5.0.9",
+    "lint-staged": "10.5.4",
+    "mongoose": "^5.11.15",
     "nyc": "^15.1.0",
     "remark-cli": "^9.0.0",
     "remark-preset-github": "^4.0.1",
@@ -67,7 +66,7 @@
     "xo": "^0.37.1"
   },
   "engines": {
-    "node": ">=8.3"
+    "node": ">=10.10.0"
   },
   "files": [
     "index.js"

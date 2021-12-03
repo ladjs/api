@@ -30,7 +30,7 @@
     "express-request-id": "^1.4.1",
     "kcors": "^2.2.2",
     "koa": "^2.13.4",
-    "koa-404-handler": "^0.0.2",
+    "koa-404-handler": "^0.1.0",
     "koa-basic-auth": "^4.0.0",
     "koa-better-error-handler": "^7.0.1",
     "koa-better-timeout": "^0.0.6",

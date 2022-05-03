@@ -116,14 +116,6 @@ class API {
       });
     }
 
-    if (this.config.rateLimit)
-      app.use(
-        ratelimit({
-          ...this.config.rateLimit,
-          db: client
-        })
-      );
-
     // remove trailing slashes
     app.use(removeTrailingSlashes());
 

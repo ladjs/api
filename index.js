@@ -29,7 +29,7 @@ const { boolean } = require('boolean');
 const { ratelimit } = require('koa-simple-ratelimit');
 
 class API {
-  constructor(config) {
+  constructor(config, client) {
     this.config = {
       ...sharedConfig('API'),
       rateLimitIgnoredGlobs: [],
@@ -41,8 +41,16 @@ class API {
       ...this.config.cabin
     });
 
+    // initialize redis
+    this.client = client
+      ? client
+      : new Redis(this.config.redis, cabin, this.config.redisMonitor);
+
     // initialize the app
     const app = new Koa();
+
+    // allow middleware to access redis client
+    app.context.client = this.client;
 
     // listen for error and log events emitted by app
     app.on('error', (err, ctx) => {
@@ -51,16 +59,6 @@ class API {
       else cabin[level](err);
     });
     app.on('log', cabin.log);
-
-    // initialize redis
-    const client = new Redis(
-      this.config.redis,
-      cabin,
-      this.config.redisMonitor
-    );
-
-    // allow middleware to access redis client
-    app.context.client = client;
 
     // override koa's undocumented error handler
     app.context.onerror = errorHandler(false, cabin);
@@ -111,7 +109,7 @@ class API {
 
         return ratelimit({
           ...this.config.rateLimit,
-          db: client
+          db: this.client
         })(ctx, next);
       });
     }
@@ -169,15 +167,13 @@ class API {
     }
 
     // start server on either http or https
-    const server =
+    this.server =
       this.config.protocol === 'https'
         ? https.createServer(this.config.ssl, app.callback())
         : http.createServer(app.callback());
 
-    // expose app, server, client
+    // expose the app
     this.app = app;
-    this.server = server;
-    this.client = client;
 
     // bind listen/close to this
     this.listen = this.listen.bind(this);

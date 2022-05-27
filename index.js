@@ -19,14 +19,17 @@ const etag = require('koa-etag');
 const json = require('koa-json');
 const koa404Handler = require('koa-404-handler');
 const koaConnect = require('koa-connect');
+const ms = require('ms');
 const multimatch = require('multimatch');
+const ratelimit = require('@ladjs/koa-simple-ratelimit');
 const removeTrailingSlashes = require('koa-no-trailing-slash');
 const requestId = require('express-request-id');
 const requestReceived = require('request-received');
 const responseTime = require('response-time');
 const sharedConfig = require('@ladjs/shared-config');
 const { boolean } = require('boolean');
-const { ratelimit } = require('koa-simple-ratelimit');
+
+const RATE_LIMIT_EXCEEDED = `Rate limit exceeded, retry in %s.`;
 
 class API {
   constructor(config, client) {
@@ -109,7 +112,14 @@ class API {
 
         return ratelimit({
           ...this.config.rateLimit,
-          db: this.client
+          db: this.client,
+          logger: cabin,
+          errorMessage(exp) {
+            const fn =
+              typeof ctx.request.t === 'function' ? ctx.request.t : util.format;
+            // NOTE: ms does not support i18n localization
+            return fn(RATE_LIMIT_EXCEEDED, ms(exp, { long: true }));
+          }
         })(ctx, next);
       });
     }

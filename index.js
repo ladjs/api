@@ -44,6 +44,12 @@ class API {
     // initialize the app
     const app = new Koa();
 
+    // only trust proxy if enabled
+    app.proxy = boolean(process.env.TRUST_PROXY);
+
+    // specify that this is our api (used by error handler)
+    app.context.api = true;
+
     // initialize cabin
     this.logger = _.isPlainObject(this.config.logger)
       ? new Cabin(this.config.logger)
@@ -79,12 +85,6 @@ class API {
 
     // override koa's undocumented error handler
     app.context.onerror = errorHandler(false, this.logger);
-
-    // only trust proxy if enabled
-    app.proxy = boolean(process.env.TRUST_PROXY);
-
-    // specify that this is our api (used by error handler)
-    app.context.api = true;
 
     // adds request received hrtime and date symbols to request object
     // (which is used by Cabin internally to add `request.timestamp` to logs

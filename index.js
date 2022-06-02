@@ -84,7 +84,7 @@ class API {
     });
 
     // override koa's undocumented error handler
-    app.context.onerror = errorHandler(false, this.logger);
+    app.context.onerror = errorHandler(false);
 
     // adds request received hrtime and date symbols to request object
     // (which is used by Cabin internally to add `request.timestamp` to logs

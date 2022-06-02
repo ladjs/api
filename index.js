@@ -5,6 +5,7 @@ const util = require('util');
 
 const Cabin = require('cabin');
 const I18N = require('@ladjs/i18n');
+const Passport = require('@ladjs/passport');
 const Koa = require('koa');
 const Redis = require('@ladjs/redis');
 const StoreIPAddress = require('@ladjs/store-ip-address');
@@ -32,39 +33,52 @@ const { boolean } = require('boolean');
 const RATE_LIMIT_EXCEEDED = `Rate limit exceeded, retry in %s.`;
 
 class API {
-  constructor(config, client) {
+  // eslint-disable-next-line complexity
+  constructor(config, Users) {
     this.config = {
       ...sharedConfig('API'),
       rateLimitIgnoredGlobs: [],
       ...config
     };
 
-    const cabin = new Cabin({
-      logger: this.config.logger,
-      ...this.config.cabin
-    });
-
-    // initialize redis
-    this.client = client
-      ? client
-      : new Redis(this.config.redis, cabin, this.config.redisMonitor);
-
     // initialize the app
     const app = new Koa();
 
-    // allow middleware to access redis client
+    // initialize cabin
+    this.logger = _.isPlainObject(this.config.logger)
+      ? new Cabin(this.config.logger)
+      : this.config.logger instanceof Cabin
+      ? this.config.logger
+      : new Cabin({
+          logger: this.config.logger ? this.config.logger : console
+        });
+    app.context.logger = this.logger;
+
+    // initialize redis
+    this.client =
+      this.config.redis === false
+        ? false
+        : _.isPlainObject(this.config.redis)
+        ? new Redis(this.config.redis, this.logger, this.config.redisMonitor)
+        : this.config.redis;
     app.context.client = this.client;
 
-    // listen for error and log events emitted by app
+    // expose passport
+    this.passport =
+      this.config.passport === false
+        ? false
+        : _.isPlainObject(this.config.passport)
+        ? new Passport(this.config.passport, Users)
+        : this.config.passport;
+    app.context.passport = this.passport;
+
+    // listen for errors emitted by app
     app.on('error', (err, ctx) => {
-      const level = err.status && err.status < 500 ? 'warn' : 'error';
-      if (ctx.logger) ctx.logger[level](err);
-      else cabin[level](err);
+      ctx.logger[err.status && err.status < 500 ? 'warn' : 'error'](err);
     });
-    app.on('log', cabin.log);
 
     // override koa's undocumented error handler
-    app.context.onerror = errorHandler(false, cabin);
+    app.context.onerror = errorHandler(false, this.logger);
 
     // only trust proxy if enabled
     app.proxy = boolean(process.env.TRUST_PROXY);
@@ -89,7 +103,7 @@ class API {
     app.use(koaConnect(requestId()));
 
     // use the cabin middleware (adds request-based logging and helpers)
-    app.use(cabin.middleware);
+    app.use(this.logger.middleware);
 
     // allow before hooks to get setup
     if (_.isFunction(this.config.hookBeforeSetup))
@@ -99,7 +113,7 @@ class API {
     if (this.config.auth) app.use(auth(this.config.auth));
 
     // rate limiting
-    if (this.config.rateLimit) {
+    if (this.client && this.config.rateLimit) {
       app.use((ctx, next) => {
         // check against ignored/whitelisted paths
         if (
@@ -113,7 +127,7 @@ class API {
         return ratelimit({
           ...this.config.rateLimit,
           db: this.client,
-          logger: cabin,
+          logger: this.logger,
           errorMessage(exp) {
             const fn =
               typeof ctx.request.t === 'function' ? ctx.request.t : util.format;
@@ -131,7 +145,7 @@ class API {
     if (this.config.i18n) {
       const i18n = this.config.i18n.config
         ? this.config.i18n
-        : new I18N({ ...this.config.i18n, logger: cabin });
+        : new I18N({ ...this.config.i18n, logger: this.logger });
       app.use(i18n.middleware);
     }
 
@@ -151,12 +165,12 @@ class API {
     app.use(json());
 
     // passport
-    if (this.config.passport) app.use(this.config.passport.initialize());
+    if (this.passport) app.use(this.passport.initialize());
 
     // store the user's last ip address in the background
     if (this.config.storeIPAddress) {
       const storeIPAddress = new StoreIPAddress({
-        logger: cabin,
+        logger: this.logger,
         ...this.config.storeIPAddress
       });
       app.use(storeIPAddress.middleware);

@@ -30,7 +30,7 @@ const responseTime = require('response-time');
 const sharedConfig = require('@ladjs/shared-config');
 const { boolean } = require('boolean');
 
-const RATE_LIMIT_EXCEEDED = `Rate limit exceeded, retry in %s.`;
+const RATE_LIMIT_EXCEEDED = 'Rate limit exceeded, retry in %s.';
 
 class API {
   // eslint-disable-next-line complexity
@@ -41,16 +41,16 @@ class API {
       ...config
     };
 
-    // initialize the app
+    // Initialize the app
     const app = new Koa();
 
-    // only trust proxy if enabled
+    // Only trust proxy if enabled
     app.proxy = boolean(process.env.TRUST_PROXY);
 
-    // specify that this is our api (used by error handler)
+    // Specify that this is our api (used by error handler)
     app.context.api = true;
 
-    // initialize cabin
+    // Initialize cabin
     this.logger = _.isPlainObject(this.config.logger)
       ? new Cabin(this.config.logger)
       : this.config.logger instanceof Cabin
@@ -60,7 +60,7 @@ class API {
         });
     app.context.logger = this.logger;
 
-    // initialize redis
+    // Initialize redis
     this.client =
       this.config.redis === false
         ? false
@@ -69,7 +69,7 @@ class API {
         : this.config.redis;
     app.context.client = this.client;
 
-    // expose passport
+    // Expose passport
     this.passport =
       this.config.passport === false
         ? false
@@ -78,50 +78,55 @@ class API {
         : this.config.passport;
     app.context.passport = this.passport;
 
-    // listen for errors emitted by app
-    app.on('error', (err, ctx) => {
-      ctx.logger[err.status && err.status < 500 ? 'warn' : 'error'](err);
+    // Listen for errors emitted by app
+    app.on('error', (error, ctx) => {
+      ctx.logger[error.status && error.status < 500 ? 'warn' : 'error'](error);
     });
 
-    // override koa's undocumented error handler
+    // Override koa's undocumented error handler
     app.context.onerror = errorHandler(false);
 
-    // adds request received hrtime and date symbols to request object
+    // Adds request received hrtime and date symbols to request object
     // (which is used by Cabin internally to add `request.timestamp` to logs
     app.use(requestReceived);
 
-    // configure timeout
+    // Configure timeout
     if (this.config.timeout) {
       const timeout = new Timeout(this.config.timeout);
       app.use(timeout.middleware);
     }
 
-    // adds `X-Response-Time` header to responses
+    // Adds `X-Response-Time` header to responses
     app.use(koaConnect(responseTime()));
 
-    // adds or re-uses `X-Request-Id` header
+    // Adds or re-uses `X-Request-Id` header
     app.use(koaConnect(requestId()));
 
-    // use the cabin middleware (adds request-based logging and helpers)
+    // Use the cabin middleware (adds request-based logging and helpers)
     app.use(this.logger.middleware);
 
-    // allow before hooks to get setup
-    if (_.isFunction(this.config.hookBeforeSetup))
+    // Allow before hooks to get setup
+    if (_.isFunction(this.config.hookBeforeSetup)) {
       this.config.hookBeforeSetup(app);
+    }
 
-    // basic auth
-    if (this.config.auth) app.use(auth(this.config.auth));
+    // Basic auth
+    if (this.config.auth) {
+      app.use(auth(this.config.auth));
+    }
 
-    // rate limiting
+    // Rate limiting
     if (this.client && this.config.rateLimit) {
       app.use((ctx, next) => {
-        // check against ignored/whitelisted paths
+        // Check against ignored/whitelisted paths
         if (
           Array.isArray(this.config.rateLimitIgnoredGlobs) &&
           this.config.rateLimitIgnoredGlobs.length > 0
         ) {
           const match = multimatch(ctx.path, this.config.rateLimitIgnoredGlobs);
-          if (Array.isArray(match) && match.length > 0) return next();
+          if (Array.isArray(match) && match.length > 0) {
+            return next();
+          }
         }
 
         return ratelimit({
@@ -138,10 +143,10 @@ class API {
       });
     }
 
-    // remove trailing slashes
+    // Remove trailing slashes
     app.use(removeTrailingSlashes());
 
-    // i18n
+    // I18n
     if (this.config.i18n) {
       const i18n = this.config.i18n.config
         ? this.config.i18n
@@ -149,25 +154,29 @@ class API {
       app.use(i18n.middleware);
     }
 
-    // conditional-get
+    // Conditional-get
     app.use(conditional());
 
-    // etag
+    // Etag
     app.use(etag());
 
-    // cors
-    if (this.config.cors) app.use(cors(this.config.cors));
+    // Cors
+    if (this.config.cors) {
+      app.use(cors(this.config.cors));
+    }
 
-    // body parser
+    // Body parser
     app.use(bodyParser());
 
-    // pretty-printed json responses
+    // Pretty-printed json responses
     app.use(json());
 
-    // passport
-    if (this.passport) app.use(this.passport.initialize());
+    // Passport
+    if (this.passport) {
+      app.use(this.passport.initialize());
+    }
 
-    // store the user's last ip address in the background
+    // Store the user's last ip address in the background
     if (this.config.storeIPAddress) {
       const storeIPAddress = new StoreIPAddress({
         logger: this.logger,
@@ -179,27 +188,30 @@ class API {
     // 404 handler
     app.use(koa404Handler);
 
-    // allow before hooks to get setup
-    if (_.isFunction(this.config.hookBeforeRoutes))
+    // Allow before hooks to get setup
+    if (_.isFunction(this.config.hookBeforeRoutes)) {
       this.config.hookBeforeRoutes(app);
-
-    // mount the app's defined and nested routes
-    if (this.config.routes) {
-      if (_.isFunction(this.config.routes.routes))
-        app.use(this.config.routes.routes());
-      else app.use(this.config.routes);
     }
 
-    // start server on either http or https
+    // Mount the app's defined and nested routes
+    if (this.config.routes) {
+      if (_.isFunction(this.config.routes.routes)) {
+        app.use(this.config.routes.routes());
+      } else {
+        app.use(this.config.routes);
+      }
+    }
+
+    // Start server on either http or https
     this.server =
       this.config.protocol === 'https'
         ? https.createServer(this.config.ssl, app.callback())
         : http.createServer(app.callback());
 
-    // expose the app
+    // Expose the app
     this.app = app;
 
-    // bind listen/close to this
+    // Bind listen/close to this
     this.listen = this.listen.bind(this);
     this.close = this.close.bind(this);
   }

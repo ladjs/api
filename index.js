@@ -20,8 +20,6 @@ const etag = require('koa-etag');
 const json = require('koa-json');
 const koa404Handler = require('koa-404-handler');
 const koaConnect = require('koa-connect');
-const ms = require('ms');
-const multimatch = require('multimatch');
 const ratelimit = require('@ladjs/koa-simple-ratelimit');
 const removeTrailingSlashes = require('koa-no-trailing-slash');
 const requestId = require('express-request-id');
@@ -30,14 +28,11 @@ const responseTime = require('response-time');
 const sharedConfig = require('@ladjs/shared-config');
 const { boolean } = require('boolean');
 
-const RATE_LIMIT_EXCEEDED = 'Rate limit exceeded, retry in %s.';
-
 class API {
   // eslint-disable-next-line complexity
   constructor(config, Users) {
     this.config = {
       ...sharedConfig('API'),
-      rateLimitIgnoredGlobs: [],
       ...config
     };
 
@@ -106,42 +101,21 @@ class API {
     app.use(this.logger.middleware);
 
     // Allow before hooks to get setup
-    if (_.isFunction(this.config.hookBeforeSetup)) {
+    if (_.isFunction(this.config.hookBeforeSetup))
       this.config.hookBeforeSetup(app);
-    }
 
     // Basic auth
-    if (this.config.auth) {
-      app.use(auth(this.config.auth));
-    }
+    if (this.config.auth) app.use(auth(this.config.auth));
 
     // Rate limiting
-    if (this.client && this.config.rateLimit) {
-      app.use((ctx, next) => {
-        // Check against ignored/whitelisted paths
-        if (
-          Array.isArray(this.config.rateLimitIgnoredGlobs) &&
-          this.config.rateLimitIgnoredGlobs.length > 0
-        ) {
-          const match = multimatch(ctx.path, this.config.rateLimitIgnoredGlobs);
-          if (Array.isArray(match) && match.length > 0) {
-            return next();
-          }
-        }
-
-        return ratelimit({
+    if (this.client && this.config.rateLimit)
+      app.use(
+        ratelimit({
           ...this.config.rateLimit,
           db: this.client,
-          logger: this.logger,
-          errorMessage(exp) {
-            const fn =
-              typeof ctx.request.t === 'function' ? ctx.request.t : util.format;
-            // NOTE: ms does not support i18n localization
-            return fn(RATE_LIMIT_EXCEEDED, ms(exp, { long: true }));
-          }
-        })(ctx, next);
-      });
-    }
+          logger: this.logger
+        })
+      );
 
     // Remove trailing slashes
     app.use(removeTrailingSlashes());
@@ -172,9 +146,7 @@ class API {
     app.use(json());
 
     // Passport
-    if (this.passport) {
-      app.use(this.passport.initialize());
-    }
+    if (this.passport) app.use(this.passport.initialize());
 
     // Store the user's last ip address in the background
     if (this.config.storeIPAddress) {
@@ -189,9 +161,8 @@ class API {
     app.use(koa404Handler);
 
     // Allow before hooks to get setup
-    if (_.isFunction(this.config.hookBeforeRoutes)) {
+    if (_.isFunction(this.config.hookBeforeRoutes))
       this.config.hookBeforeRoutes(app);
-    }
 
     // Mount the app's defined and nested routes
     if (this.config.routes) {

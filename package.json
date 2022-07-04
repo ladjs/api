@@ -11,8 +11,8 @@
     "Nick Baugh <niftylettuce@gmail.com> (http://niftylettuce.com/)"
   ],
   "dependencies": {
-    "@koa/router": "^10.1.1",
-    "@ladjs/i18n": "^7.2.6",
+    "@koa/router": "^11.0.0",
+    "@ladjs/i18n": "^8.0.1",
     "@ladjs/koa-simple-ratelimit": "^4.0.1",
     "@ladjs/passport": "^5.0.3",
     "@ladjs/redis": "^1.0.7",

@@ -107,16 +107,6 @@ class API {
     // Basic auth
     if (this.config.auth) app.use(auth(this.config.auth));
 
-    // Rate limiting
-    if (this.client && this.config.rateLimit)
-      app.use(
-        ratelimit({
-          ...this.config.rateLimit,
-          db: this.client,
-          logger: this.logger
-        })
-      );
-
     // Remove trailing slashes
     app.use(removeTrailingSlashes());
 
@@ -147,6 +137,16 @@ class API {
 
     // Passport
     if (this.passport) app.use(this.passport.initialize());
+
+    // Rate limiting
+    if (this.client && this.config.rateLimit)
+      app.use(
+        ratelimit({
+          ...this.config.rateLimit,
+          db: this.client,
+          logger: this.logger
+        })
+      );
 
     // Store the user's last ip address in the background
     if (this.config.storeIPAddress) {

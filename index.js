@@ -1,7 +1,7 @@
-const process = require('process');
-const http = require('http');
-const https = require('https');
-const util = require('util');
+const process = require('node:process');
+const http = require('node:http');
+const https = require('node:https');
+const util = require('node:util');
 
 const Cabin = require('cabin');
 const I18N = require('@ladjs/i18n');
@@ -51,7 +51,7 @@ class API {
       : this.config.logger instanceof Cabin
       ? this.config.logger
       : new Cabin({
-          logger: this.config.logger ? this.config.logger : console
+          logger: this.config.logger || console
         });
     app.context.logger = this.logger;
 

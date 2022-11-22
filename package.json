@@ -13,7 +13,7 @@
   "dependencies": {
     "@koa/router": "^12.0.0",
     "@ladjs/i18n": "^8.0.1",
-    "@ladjs/koa-simple-ratelimit": "^4.0.2",
+    "@ladjs/koa-simple-ratelimit": "^4.1.0",
     "@ladjs/passport": "^5.0.3",
     "@ladjs/redis": "^1.0.7",
     "@ladjs/shared-config": "^8.0.0",

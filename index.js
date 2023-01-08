@@ -163,7 +163,7 @@ class API {
     // X-Robots-Tag
     // <https://developers.google.com/search/docs/crawling-indexing/robots-meta-tag>
     app.use((ctx, next) => {
-      ctx.set('X-Robots-Tag', 'noindex');
+      ctx.set('X-Robots-Tag', 'none');
       return next();
     });
 

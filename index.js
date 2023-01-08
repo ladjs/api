@@ -160,6 +160,13 @@ class API {
     // 404 handler
     app.use(koa404Handler);
 
+    // X-Robots-Tag
+    // <https://developers.google.com/search/docs/crawling-indexing/robots-meta-tag>
+    app.use((ctx, next) => {
+      ctx.set('X-Robots-Tag', 'noindex');
+      return next();
+    });
+
     // Allow before hooks to get setup
     if (_.isFunction(this.config.hookBeforeRoutes))
       this.config.hookBeforeRoutes(app);

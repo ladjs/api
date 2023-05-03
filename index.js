@@ -19,6 +19,7 @@ const etag = require('koa-etag');
 const json = require('koa-json');
 const koa404Handler = require('koa-404-handler');
 const koaConnect = require('koa-connect');
+const multimatch = require('multimatch');
 const ratelimit = require('@ladjs/koa-simple-ratelimit');
 const removeTrailingSlashes = require('koa-no-trailing-slash');
 const requestId = require('express-request-id');
@@ -129,7 +130,23 @@ class API {
     }
 
     // Body parser
-    app.use(bodyParser());
+    // POST /v1/logs (1 MB max so 1.1 MB w/overhead)
+    // POST /v1/emails (50 MB max so 51 MB w/overhead)
+    app.use((ctx, next) => {
+      // check against ignored paths
+      if (
+        Array.isArray(this.config.bodyParserIgnoredPathGlobs) &&
+        this.config.bodyParserIgnoredPathGlobs.length > 0
+      ) {
+        const match = multimatch(
+          ctx.path,
+          this.config.bodyParserIgnoredPathGlobs
+        );
+        if (Array.isArray(match) && match.length > 0) return next();
+      }
+
+      return bodyParser()(ctx, next);
+    });
 
     // Pretty-printed json responses
     app.use(json());

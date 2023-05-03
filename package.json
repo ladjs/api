@@ -34,6 +34,7 @@
     "koa-json": "^2.0.2",
     "koa-no-trailing-slash": "^2.1.0",
     "lodash": "^4.17.21",
+    "multimatch": "5",
     "request-received": "^0.0.3",
     "response-time": "^2.3.2"
   },

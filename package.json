@@ -1,7 +1,7 @@
 {
   "name": "@ladjs/api",
   "description": "API server for Lad",
-  "version": "14.1.2",
+  "version": "14.1.3",
   "author": "Nick Baugh <niftylettuce@gmail.com> (http://niftylettuce.com/)",
   "bugs": {
     "url": "https://github.com/ladjs/api/issues",

@@ -21,12 +21,24 @@ const koa404Handler = require('koa-404-handler');
 const koaConnect = require('koa-connect');
 const multimatch = require('multimatch');
 const ratelimit = require('@ladjs/koa-simple-ratelimit');
-const removeTrailingSlashes = require('koa-no-trailing-slash');
 const requestId = require('express-request-id');
 const requestReceived = require('request-received');
 const responseTime = require('response-time');
 const sharedConfig = require('@ladjs/shared-config');
 const { boolean } = require('boolean');
+
+// https://gist.github.com/titanism/241fc0c5f1c1a0b7cae3d97580e435fb
+function removeTrailingSlashes(ctx, next) {
+  const { path, search } = ctx.request;
+  if (path !== '/' && !path.startsWith('//') && path.slice(-1) === '/') {
+    const redirectUrl = path.slice(0, -1) + search;
+    ctx.response.status = 301;
+    ctx.redirect(redirectUrl);
+    return;
+  }
+
+  return next();
+}
 
 class API {
   // eslint-disable-next-line complexity
@@ -108,7 +120,7 @@ class API {
     if (this.config.auth) app.use(auth(this.config.auth));
 
     // Remove trailing slashes
-    app.use(removeTrailingSlashes());
+    app.use(removeTrailingSlashes);
 
     // I18n
     if (this.config.i18n) {

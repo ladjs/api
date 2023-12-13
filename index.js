@@ -61,10 +61,10 @@ class API {
     this.logger = _.isPlainObject(this.config.logger)
       ? new Cabin(this.config.logger)
       : this.config.logger instanceof Cabin
-      ? this.config.logger
-      : new Cabin({
-          logger: this.config.logger || console
-        });
+        ? this.config.logger
+        : new Cabin({
+            logger: this.config.logger || console
+          });
     app.context.logger = this.logger;
 
     // Initialize redis
@@ -72,8 +72,8 @@ class API {
       this.config.redis === false
         ? false
         : _.isPlainObject(this.config.redis)
-        ? new Redis(this.config.redis, this.logger, this.config.redisMonitor)
-        : this.config.redis;
+          ? new Redis(this.config.redis, this.logger, this.config.redisMonitor)
+          : this.config.redis;
     app.context.client = this.client;
 
     // Expose passport
@@ -81,8 +81,8 @@ class API {
       this.config.passport === false
         ? false
         : _.isPlainObject(this.config.passport)
-        ? new Passport(this.config.passport, Users)
-        : this.config.passport;
+          ? new Passport(this.config.passport, Users)
+          : this.config.passport;
     app.context.passport = this.passport;
 
     // Listen for errors emitted by app

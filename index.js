@@ -44,6 +44,7 @@ class API {
   // eslint-disable-next-line complexity
   constructor(config, Users) {
     this.config = {
+      removeTrailingSlashes: true,
       ...sharedConfig('API'),
       ...config
     };
@@ -120,7 +121,7 @@ class API {
     if (this.config.auth) app.use(auth(this.config.auth));
 
     // Remove trailing slashes
-    app.use(removeTrailingSlashes);
+    if (this.config.removeTrailingSlashes) app.use(removeTrailingSlashes);
 
     // I18n
     if (this.config.i18n) {

@@ -198,7 +198,7 @@ class API {
 
     // Allow before hooks to get setup
     if (_.isFunction(this.config.hookBeforeRoutes))
-      this.config.hookBeforeRoutes(app);
+      this.config.hookBeforeRoutes(app, this.config);
 
     // Mount the app's defined and nested routes
     if (this.config.routes) {

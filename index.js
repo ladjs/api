@@ -145,21 +145,22 @@ class API {
     // Body parser
     // POST /v1/logs (1 MB max so 1.1 MB w/overhead)
     // POST /v1/emails (50 MB max so 51 MB w/overhead)
-    app.use((ctx, next) => {
-      // check against ignored paths
-      if (
-        Array.isArray(this.config.bodyParserIgnoredPathGlobs) &&
-        this.config.bodyParserIgnoredPathGlobs.length > 0
-      ) {
-        const match = multimatch(
-          ctx.path,
-          this.config.bodyParserIgnoredPathGlobs
-        );
-        if (Array.isArray(match) && match.length > 0) return next();
-      }
+    if (this.config.bodyParser !== false)
+      app.use((ctx, next) => {
+        // check against ignored paths
+        if (
+          Array.isArray(this.config.bodyParserIgnoredPathGlobs) &&
+          this.config.bodyParserIgnoredPathGlobs.length > 0
+        ) {
+          const match = multimatch(
+            ctx.path,
+            this.config.bodyParserIgnoredPathGlobs
+          );
+          if (Array.isArray(match) && match.length > 0) return next();
+        }
 
-      return bodyParser()(ctx, next);
-    });
+        return bodyParser(this.config.bodyParser || {})(ctx, next);
+      });
 
     // Pretty-printed json responses
     app.use(json());

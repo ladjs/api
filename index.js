@@ -70,11 +70,12 @@ class API {
 
     // Initialize redis
     this.client =
-      this.config.redis === false
+      this.config.client ||
+      (this.config.redis === false
         ? false
         : _.isPlainObject(this.config.redis)
           ? new Redis(this.config.redis, this.logger, this.config.redisMonitor)
-          : this.config.redis;
+          : this.config.redis);
     app.context.client = this.client;
 
     // Expose passport

@@ -44,8 +44,11 @@ class API {
   // eslint-disable-next-line complexity
   constructor(config, Users) {
     this.config = {
-      removeTrailingSlashes: true,
       ...sharedConfig('API'),
+      removeTrailingSlashes: true,
+      prettyPrintedJSON: process.env.PRETTY_PRINTED_JSON
+        ? Boolean(process.env.PRETTY_PRINTED_JSON)
+        : false,
       ...config
     };
 
@@ -163,8 +166,9 @@ class API {
         return bodyParser(this.config.bodyParser || {})(ctx, next);
       });
 
-    // Pretty-printed json responses
-    app.use(json());
+    // pretty-printed json responses
+    // (default unless in development/test environment)
+    app.use(json({ pretty: this.config.prettyPrintedJSON, param: 'pretty' }));
 
     // Passport
     if (this.passport) app.use(this.passport.initialize());

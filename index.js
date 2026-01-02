@@ -2,16 +2,18 @@ const process = require('node:process');
 const http = require('node:http');
 const https = require('node:https');
 const util = require('node:util');
+const zlib = require('node:zlib');
 const Cabin = require('cabin');
 const I18N = require('@ladjs/i18n');
-const Passport = require('@ladjs/passport');
 const Koa = require('koa');
+const Passport = require('@ladjs/passport');
 const Redis = require('@ladjs/redis');
 const StoreIPAddress = require('@ladjs/store-ip-address');
 const Timeout = require('koa-better-timeout');
 const _ = require('lodash');
 const auth = require('koa-basic-auth');
 const bodyParser = require('koa-bodyparser');
+const compress = require('koa-compress');
 const conditional = require('koa-conditional-get');
 const cors = require('kcors');
 const errorHandler = require('koa-better-error-handler');
@@ -49,6 +51,17 @@ class API {
       prettyPrintedJSON: process.env.PRETTY_PRINTED_JSON
         ? Boolean(process.env.PRETTY_PRINTED_JSON)
         : false,
+
+      // https://github.com/koajs/compress
+      compress: {
+        br: {
+          params: {
+            [zlib.constants.BROTLI_PARAM_MODE]: zlib.constants.BROTLI_MODE_TEXT,
+            [zlib.constants.BROTLI_PARAM_QUALITY]: 4
+          }
+        }
+      },
+
       ...config
     };
 
@@ -134,6 +147,9 @@ class API {
         : new I18N({ ...this.config.i18n, logger: this.logger });
       app.use(i18n.middleware);
     }
+
+    // compress/gzip
+    if (this.config.compress) app.use(compress(this.config.compress));
 
     // Conditional-get
     app.use(conditional());
